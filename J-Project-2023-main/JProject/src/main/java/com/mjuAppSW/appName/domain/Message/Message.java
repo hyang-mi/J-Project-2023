@@ -1,5 +1,6 @@
 package com.mjuAppSW.appName.domain.Message;
-
+import com.mjuAppSW.appName.domain.Room_in_member.Room_in_member;
+import com.mjuAppSW.appName.domain.Member.Member;
 import com.mjuAppSW.appName.domain.Room.Room;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,29 +18,24 @@ import java.util.List;
 @Table(name="Message")
 public class Message {
     @Id
-    @Column(name="Message_id", nullable = false)
-    private int Message_id;
+    @Column(nullable = false)
+    private long messageId;
 
     @ManyToOne
-    @JoinColumn(name="Member_id")
-    @Column(name="Member_id", nullable = false)
-    private Member Member_id;
+    @JoinColumn(name="memberId")
+    private Member memberId;
 
     @ManyToOne
-    @JoinColumn(name="Room_id")
-    @Column(name="Room_id", nullable = false)
-    private Room Room_id;
+    @JoinColumn(name="roomId")
+    private Room roomId;
 
-    @Column(name="Content", nullable = false)
-    private String Content;
+    @Column(nullable = false)
+    private String content;
 
-    @Column(name="Time", nullable = false)
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date Time;
+    private Date time;
 
-    @Column(name="Is_checked", nullable = false)
-    private char Is_checked;
-
-    @OneToMany(mappedBy = "Message")
-    private List<com.mjuAppSW.appName.domain.Room_in_member.Room_in_member> Room_in_member = new ArrayList<>();
+    @Column(nullable = false)
+    private char isChecked;
 }

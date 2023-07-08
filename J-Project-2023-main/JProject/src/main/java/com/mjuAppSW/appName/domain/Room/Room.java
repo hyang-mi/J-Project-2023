@@ -1,6 +1,7 @@
 package com.mjuAppSW.appName.domain.Room;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,6 +9,8 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import com.mjuAppSW.appName.domain.Room_in_member.Room_in_member;
 
 @Entity
 @Setter
@@ -17,18 +20,23 @@ import java.util.List;
 public class Room{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="Room_id", nullable = false)
-    public int Room_id;
+    @Column(nullable = false)
+    public long roomId;
 
-    @Column(name="Date", nullable = false)
+    @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    public Date Date;
+    public Date date;
 
-    @Column(name="Status", nullable = false)
-    public char Status;
+    @Column(nullable = false)
+    public char status;
 
-    @OneToMany(mappedBy = "Room")
-    private List<com.mjuAppSW.appName.domain.Room_in_member.Room_in_member> Room_in_member = new ArrayList<>();
+    @OneToMany(mappedBy = "roomId")
+    private List<Room_in_member> roomInMember = new ArrayList<>();
+
+    public Room(Date date, char status) {
+        this.date = date;
+        this.status = status;
+    }
 
 
     public static Room createRoomItem(Date date, char c){

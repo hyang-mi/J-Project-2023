@@ -7,7 +7,8 @@ import java.io.Serializable;
 @Data
 
 public class Room_in_member_id implements Serializable {
-
+    private long memberId;
+    private long roomId;
     @Override
     public int hashCode(){
       return super.hashCode();

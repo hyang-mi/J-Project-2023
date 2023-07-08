@@ -13,7 +13,7 @@ public class RoomApiController {
     @Autowired
     private RoomService roomService;
 
-    @PostMapping("createRoom")
+    @PostMapping("/createRoom")
     public ResponseEntity<RoomDTO> createRoom(){
         RoomDTO roomDTO = roomService.createRoom();
         return ResponseEntity.ok(roomDTO);

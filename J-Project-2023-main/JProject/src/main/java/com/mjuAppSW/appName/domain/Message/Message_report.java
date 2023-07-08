@@ -14,17 +14,16 @@ import lombok.Setter;
 public class Message_report {
     @Id
     @Column(name="Report_id", nullable = false)
-    private int Report_id;
+    private int reportId;
 
     @OneToOne
     @JoinColumn(name="Message_id")
-    @Column(name="Message_id", nullable = false)
-    private Message Message_id;
+    private Message MessageId;
 
-    @ManyToOne
-    @JoinColumn(name="Category_id")
-    @Column(name="Category_id", nullable = false)
-    private Category_id Category_id;
+//    @ManyToOne
+//    @JoinColumn(name="Category_id")
+//    @Column(name="Category_id", nullable = false)
+//    private Category_id CategoryId;
 
     @Column(name="Content")
     private String Content;

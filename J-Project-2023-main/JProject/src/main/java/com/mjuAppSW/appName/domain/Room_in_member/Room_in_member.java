@@ -1,7 +1,6 @@
 package com.mjuAppSW.appName.domain.Room_in_member;
 
-
-import com.mjuAppSW.appName.domain.Message.Message;
+import com.mjuAppSW.appName.domain.Member.Member;
 import com.mjuAppSW.appName.domain.Room.Room;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,59 +17,34 @@ import java.util.Date;
 @NoArgsConstructor
 public class Room_in_member{
     @Id
-    @ManyToOne
-    @JoinColumn(name="Message_id")
-    @Column(name="Message_id", nullable = false)
-    private Message Message_id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="id")
+    private Member memberId;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
-    @Column(name="Room_id", nullable = false)
-    private Room Room_id;
+    @JoinColumn(name="roomId")
+    private Room roomId;
 
-    @Column(name="Expired", nullable = false)
-    private char Expired;
+    @Column(nullable = false)
+    private char expired;
 
-    @Column(name="Result", nullable = false)
-    private char Result;
+    @Column(nullable = false)
+    private char result;
 
-    @Column(name="Entry_time")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date Entry_time;
+    private Date entryTime;
 
-    @Column(name="Exit_time")
     @Temporal(TemporalType.TIMESTAMP)
-    private Date Exit_time;
+    private Date exitTime;
+
+
+    public static Room_in_member createRoomItem(Room room, Member member, char expired, char result){
+        Room_in_member room_in_member = new Room_in_member();
+        room_in_member.setRoomId(room);
+        room_in_member.setMemberId(member);
+        room_in_member.setExpired(expired);
+        room_in_member.setResult(result);
+        return room_in_member;
+    }
 }
-
-
-//public class Room_in_member {
-//    @Id
-//    @Column(name="Room_in_member_id", nullable = false)
-//    private int Room_in_member_id;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "Message_id")
-//    @Column(name="Message_id", nullable = false)
-//    private Message Message_id;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn
-//    @Column(name="Room_id", nullable = false)
-//    private Room Room_id;
-//
-//    @Column(name="Expired", nullable = false)
-//    private char Expired;
-//
-//    @Column(name="Result", nullable = false)
-//    private char Result;
-//
-//    @Column(name="Entry_time")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date Entry_time;
-//
-//    @Column(name="Exit_time")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date Exit_time;
-//}

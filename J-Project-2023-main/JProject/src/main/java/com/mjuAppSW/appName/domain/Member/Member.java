@@ -7,14 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Blob;
+import java.util.ArrayList;
+import java.util.List;
+import com.mjuAppSW.appName.domain.Room_in_member.Room_in_member;
 
 @Entity
 @Getter @Setter // Setter 지양
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Member {
 
     @Id @GeneratedValue
-    @Column(name = "Member_id")
+    @Column(nullable = false)
     private long id;
 
     @Column(nullable = false)
@@ -30,4 +33,7 @@ public class Member {
 
     @Lob
     private Blob Picture;
+
+    @OneToMany(mappedBy = "memberId")
+    private List<Room_in_member> roomInMember = new ArrayList<>();
 }

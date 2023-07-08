@@ -8,13 +8,13 @@ import java.util.Date;
 @Getter
 @Setter
 public class RoomDTO {
-    private int Room_id;
+    private long roomId;
     private java.util.Date Date;
     private char Status;
 
-    public static RoomDTO createRoomDTO(int room_id, Date date, char status){
+    public static RoomDTO createRoomDTO(long roomId, Date date, char status){
         RoomDTO roomDTO = new RoomDTO();
-        roomDTO.setRoom_id(room_id);
+        roomDTO.setRoomId(roomId);
         roomDTO.setDate(date);
         roomDTO.setStatus(status);
         return roomDTO;
