@@ -1,4 +1,4 @@
-package com.mju19.appName;
+package com.mjuAppSW.appName;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.mju19.appName.domain.vote;
+package com.mjuAppSW.appName.domain.VoteCategory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,16 +7,21 @@ import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Vote_category {
+public class VoteCategory {
 
     @Id @GeneratedValue
     @Column(name = "Category_id")
-    private long id;
+    private Long id;
 
-    private String Name; // nullable?
+    @Column(nullable = false)
+    private String name;
+
+    //테스트 용도 생성자
+    public VoteCategory(String name) {
+        this.name = name;
+    }
 }

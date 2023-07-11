@@ -1,33 +1,44 @@
-package com.mju19.appName.domain.member;
+package com.mjuAppSW.appName.domain.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mjuAppSW.appName.domain.heart.Heart;
+import com.mjuAppSW.appName.domain.vote.Vote;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.sql.Blob;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter @Setter // Setter 지양
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id @GeneratedValue
     @Column(name = "Member_id")
-    private long id;
+    private Long id;
 
     @Column(nullable = false)
-    private String Name;
+    private String name;
 
     @Column(nullable = false)
-    private String K_email;
+    private Long kId;
 
-    private String U_email;
+    private String uEmail;
 
     @Column(length = 15)
-    private String Introduce;
+    private String introduce;
 
-    @Lob
-    private Blob Picture;
+    private String imagePath; // 사진 경로
+
+    @Column(length = 6)
+    private String certifyNum;
+
+    public Member(String name, Long kId) {
+        this.name = name;
+        this.kId = kId;
+    }
 }

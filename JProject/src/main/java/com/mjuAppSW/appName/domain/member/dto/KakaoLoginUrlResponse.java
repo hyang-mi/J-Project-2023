@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.member;
+package com.mjuAppSW.appName.domain.member.dto;
 
 import lombok.Data;
 

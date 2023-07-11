@@ -1,21 +1,19 @@
-package com.mjuAppSW.appName.domain.vote;
+package com.mjuAppSW.appName.domain.heart;
 
-import com.mjuAppSW.appName.domain.VoteCategory.VoteCategory;
 import com.mjuAppSW.appName.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Vote {
+public class Heart {
 
     @Id @GeneratedValue
-    @Column(name = "Vote_id")
+    @Column(name = "Heart_id")
     private Long id;
 
     @Column(nullable = false)
@@ -25,20 +23,16 @@ public class Vote {
     @JoinColumn(name = "Take_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Category_id", nullable = false)
-    private VoteCategory voteCategory;
+    @Column(nullable = false)
+    private LocalDate date; // LocalDateTime으로 수정해야, 변환 조회 방법 모르겠어서 일단 이렇게
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private Boolean named;
 
-    private String hint;
-
-    // 테스트 용도 생성자
-    public Vote(Long giveId, Member member, VoteCategory voteCategory, LocalDateTime date) {
+    public Heart(long giveId, Member member, LocalDate date, boolean named) {
         this.giveId = giveId;
         this.member = member;
-        this.voteCategory = voteCategory;
         this.date = date;
+        this.named = named;
     }
 }

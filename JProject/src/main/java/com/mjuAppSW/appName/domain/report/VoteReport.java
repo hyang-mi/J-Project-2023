@@ -1,28 +1,28 @@
-package com.mju19.appName.domain.vote;
+package com.mjuAppSW.appName.domain.report;
 
+import com.mjuAppSW.appName.domain.vote.Vote;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Vote_report {
+public class VoteReport {
 
     @Id @GeneratedValue
     @Column(name = "Report_id")
-    private long id;
+    private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "Category_id", nullable = false)
     private Vote vote;
 
-    private String Content;
+    private String content;
 
     @Column(nullable = false)
-    private LocalDateTime Date;
+    private LocalDateTime date;
 }
