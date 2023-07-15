@@ -21,9 +21,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Query("UPDATE Member m SET m.uEmail = :uEmail WHERE m.id = :id")
     void saveUEmailById(@Param("uEmail") String uEmail, @Param("id") Long id);
 
+    @Transactional
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE Member m SET m.imagePath = :imagePath WHERE m.id = :id")
-    void saveImagePathById(@Param("imagePath") String imagePath, @Param("id") Long id);
+    @Query("UPDATE Member m SET m.basicProfile = :basicProfile WHERE m.id = :id")
+    void saveBasicProfileById(@Param(("basicProfile")) Boolean basicProfile, @Param("id") Long id);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Member m SET m.introduce = :introduce WHERE m.id = :id")

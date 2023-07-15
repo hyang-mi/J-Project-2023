@@ -18,5 +18,10 @@ public class ReportCategory {
     private Long id;
 
     @Column(nullable = false)
-    private String Name;
+    private String name;
+
+    //테스트 용도 생성자
+    public ReportCategory(String name) {
+        this.name = name;
+    }
 }

@@ -5,12 +5,12 @@ import lombok.Data;
 @Data
 public class ProfileResponse {
     private String name;
-    private String base64Image;
+    private String base64Picture;
     private String introduce;
 
-    public ProfileResponse(String name, String base64Image, String introduce) {
+    public ProfileResponse(String name, String base64Picture, String introduce) {
         this.name = name;
-        this.base64Image = base64Image;
+        this.base64Picture = base64Picture;
         this.introduce = introduce;
     }
 }

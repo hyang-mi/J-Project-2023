@@ -3,6 +3,7 @@ package com.mjuAppSW.appName.domain.member;
 import com.mjuAppSW.appName.domain.heart.HeartRepository;
 import com.mjuAppSW.appName.domain.member.dto.*;
 import com.mjuAppSW.appName.domain.vote.VoteRepository;
+import com.mjuAppSW.appName.picture.RedisUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -15,12 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDate;
-import java.util.Base64;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -33,9 +29,10 @@ public class MemberService {
     private final HeartRepository heartRepository;
     private final VoteRepository voteRepository;
     private final JavaMailSender javaMailSender;
+    private final RedisUploader redisUploader;
 
-    public LoginResponse login(String accessToken) {
-        ResponseEntity<KakaoUserResponse> kakaoResponse = getUserInfo(accessToken);
+    public LoginResponse login(LoginRequest request) {
+        ResponseEntity<KakaoUserResponse> kakaoResponse = getUserInfo(request.getAccessToken());
 
         if (kakaoResponse.getStatusCode() == HttpStatus.OK) {
             KakaoUserResponse kakaoResponseBody = kakaoResponse.getBody();
@@ -48,7 +45,8 @@ public class MemberService {
                 return new LoginResponse(findMember.getId(), findMember.getName());
             }
             else {
-                Member newMember = new Member(kakaoResponseBody.getKakaoAccount().getName(), kakaoResponseBody.getKId());
+                Member newMember = new Member(
+                        kakaoResponseBody.getKakaoAccount().getName(), kakaoResponseBody.getKId(), true);
                 memberRepository.save(newMember);
                 Member savedMember = memberRepository.findBykId(kakaoResponseBody.getKId());
                 return new LoginResponse(savedMember.getId(), savedMember.getName());
@@ -78,156 +76,111 @@ public class MemberService {
         }
     }
 
-    public UMailResponse sendCertifyNum(String UId, Long id) {
+    public UMailResponse sendCertifyNum(UMailRequest request) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(UId + "@mju.ac.kr");
+        message.setTo(request.getUEmail() + "@mju.ac.kr");
         message.setSubject("[앱이름] 인증번호를 확인하세요.");
 
         int certifyNum = ThreadLocalRandom.current().nextInt(100000, 1000000);
-        memberRepository.saveCertifyNumById(String.valueOf(certifyNum), id);
-        Optional<Member> member = memberRepository.findById(id);
+        memberRepository.saveCertifyNumById(String.valueOf(certifyNum), request.getId());
+        Optional<Member> member = memberRepository.findById(request.getId());
 
-        if(member.isPresent()) {
-            message.setText(String.valueOf("인증번호는 [" + certifyNum + "] 입니다."));
-            javaMailSender.send(message);
-            return new ModelMapper().map(member, UMailResponse.class);
-        }
-        else {
-            return null;
-        }
+        if(member.isEmpty()) return null;
+
+        message.setText(String.valueOf("인증번호는 [" + certifyNum + "] 입니다."));
+        javaMailSender.send(message);
+        return new ModelMapper().map(member, UMailResponse.class);
     }
 
-    public boolean authCertifyNum(String certifyNum, String uEmail, Long id) {
-        Optional<Member> findMember = memberRepository.findById(id);
-        if (findMember.isPresent()) {
-            String savedCertifyNum = findMember.get().getCertifyNum();
-            if (certifyNum.equals(savedCertifyNum)) {
-                memberRepository.saveUEmailById(uEmail, id);
-                return true;
-            }
-            return false;
-        }
-        return false;
-    }
+    public boolean authCertifyNum(UNumRequest request) {
+        Optional<Member> findMember = memberRepository.findById(request.getId());
 
-    public SetResponse set(Long id) {
-        Optional<Member> findMember = memberRepository.findById(id);
-        if(findMember.isPresent()) {
-            Member member = findMember.get();
-            SetResponse response = new SetResponse();
-            response.setName(member.getName());
+        if(findMember.isEmpty()) return false;
 
-            String base64Image = findImage(member);
-            response.setBase64Image(base64Image);
-            return response;
-        }
-        else {
-            return null; // id 값이 유효하지 않은 경우
-        }
-    }
-
-    public boolean withdrawal(Long id) {
-        memberRepository.deleteById(id);
-        if (!memberRepository.existsById(id)) {
+        String savedCertifyNum = findMember.get().getCertifyNum();
+        if (request.getCertifyNum().equals(savedCertifyNum)) {
+            memberRepository.saveUEmailById(request.getUEmail(), request.getId());
             return true;
         }
         return false;
     }
 
-    public MyPageResponse sendMyPage(Long id) {
-        Optional<Member> findMember = memberRepository.findById(id);
-        if (findMember.isPresent()) {
-            Member member = findMember.get();
-            MyPageResponse response = new MyPageResponse(member.getName(), member.getIntroduce());
+    public SetResponse set(MemberRequest request) {
+        Optional<Member> findMember = memberRepository.findById(request.getId());
 
-            String base64Image = findImage(member);
-            response.setBase64Image(base64Image);
+        if (findMember.isEmpty()) return null; // id 값이 유효하지 않은 경우
 
-            int todayHeart = heartRepository.findTodayHeartsById(LocalDate.now(), member.getId());
-            response.setTodayHeart(todayHeart);
+        Member member = findMember.get();
+        SetResponse response = new SetResponse();
+        response.setName(member.getName());
 
-            int totalHeart = heartRepository.findTotalHeartsById(member.getId());
-            response.setTotalHeart(totalHeart);
+        if(member.getBasicProfile()) return response; // 기본 프로필 사진인 경우
 
-            Pageable pageable = PageRequest.of(0, 3);
-            response.setVoteTop3(voteRepository.findVoteCategoryById(member.getId(), pageable));
-            return response;
-        }
-        else {
-            return null; // id 값이 유효하지 않은 경우
-        }
+        response.setBase64Picture(redisUploader.bringPicture(member.getId()));
+        return response;
     }
 
-    public boolean transImage(Long id, String encodedImage) {
-        Optional<Member> findMember = memberRepository.findById(id);
-        if (findMember.isPresent()) {
-            return saveImage(findMember.get(), encodedImage);
-        }
-        else {
-            return false; // id 값이 유효하지 않은 경우
-        }
+    public void withdrawal(MemberRequest request) {
+        memberRepository.deleteById(request.getId());
     }
 
-    public boolean transIntroduce(Long id, String introduce) {
-        Optional<Member> findMember = memberRepository.findById(id);
-        if (findMember.isPresent()) {
-            memberRepository.saveIntroduceById(introduce, id);
-            return true;
-        }
-        else {
-            return false; // id 값이 유효하지 않은 경우
-        }
+    public MyPageResponse sendMyPage(MemberRequest request) {
+        Optional<Member> findMember = memberRepository.findById(request.getId());
+
+        if (findMember.isEmpty()) return null;
+
+        Member member = findMember.get();
+        MyPageResponse response = new MyPageResponse(member.getName(), member.getIntroduce());
+
+        if(!member.getBasicProfile())
+            response.setBase64Picture(redisUploader.bringPicture(member.getId()));
+
+        int todayHeart = heartRepository.findTodayHeartsById(LocalDate.now(), member.getId());
+        response.setTodayHeart(todayHeart);
+
+        int totalHeart = heartRepository.findTotalHeartsById(member.getId());
+        response.setTotalHeart(totalHeart);
+
+        Pageable pageable = PageRequest.of(0, 3);
+        response.setVoteTop3(voteRepository.findVoteCategoryById(member.getId(), pageable));
+        return response;
     }
 
-    private String findImage(Member member) {
-        String imagePath = member.getImagePath();
-        if(imagePath == null) // 저장소에 이미지 경로 미리 있느냐 / 없느냐에 따라 구현 달라질 듯
-            return null;
-        return encodeImage(imagePath);
+    public boolean transPicture(ImageRequest request) {
+        Optional<Member> findMember = memberRepository.findById(request.getId());
+        if(findMember.isEmpty()) return false;
+        Member member = findMember.get();
+
+        redisUploader.updatePicture(request.getId(), request.getBase64Picture());
+        if(member.getBasicProfile())
+            memberRepository.saveBasicProfileById(false, member.getId());
+        return true;
     }
 
-    private String encodeImage(String imagePath) {
-        String filePath = "storagePath" + imagePath; // 파일 저장소 경로
-        File imageFile = new File(filePath);
-        try {
-            // imageFile이 null이라면?
-            byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
-            String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-            return base64Image;
-        } catch (IOException e) {
-            log.info("프로필 사진 경로가 유효하지 않음");
-            return null;
-        }
+    public boolean deletePicture(MemberRequest request) {
+        Optional<Member> findMember = memberRepository.findById(request.getId());
+        if(findMember.isEmpty()) return false; // id 값이 유효하지 않은 경우
+
+        memberRepository.saveBasicProfileById(true, request.getId());
+        return true;
     }
 
-    private boolean saveImage(Member member, String encodedImage){
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedImage);
-        String imagePath = member.getImagePath();
+    public boolean transIntroduce(IntroduceRequest request) {
+        Optional<Member> findMember = memberRepository.findById(request.getId());
+        if(findMember.isEmpty()) return false; // id 값이 유효하지 않은 경우
 
-        if (imagePath == null) { // 임시, 주소 클라우드에서 자동 설정할 것, picture 저장하는 로직 바꿔야 함
-            imagePath = String.valueOf(member.getId());
-            memberRepository.saveImagePathById(imagePath, member.getId());
-        }
-        try {
-            FileOutputStream fos = new FileOutputStream("storagePath" + imagePath); // 파일 저장소 경로
-            fos.write(decodedBytes);
-            return true;
-        }
-        catch (IOException e) {
-            log.info("프로필 사진 경로가 유효하지 않음");
-            return false;
-        }
+        memberRepository.saveIntroduceById(request.getIntroduce(), request.getId());
+        return true;
     }
 
-    public ProfileResponse getOtherProfile(Long id) {
-        Optional<Member> findMember = memberRepository.findById(id);
-        if (findMember.isPresent()) {
-            Member member = findMember.get();
-            String base64Image = findImage(member);
-            return new ProfileResponse(member.getName(), base64Image, member.getIntroduce());
-        }
-        else {
-            return null;
-        }
+    public ProfileResponse getOtherProfile(MemberRequest request) {
+        Optional<Member> findMember = memberRepository.findById(request.getId());
+        if(findMember.isEmpty()) return null;
+
+        Member member = findMember.get();
+        String base64Picture = null;
+        if(!member.getBasicProfile()) base64Picture = redisUploader.bringPicture(request.getId());
+
+        return new ProfileResponse(member.getName(), base64Picture, member.getIntroduce());
     }
 }

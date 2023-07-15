@@ -40,4 +40,7 @@ out/
 /application.yml
 
 # Ignore test package
-/src/test/java/com/mjuAppSW
+/src/test/java/com/mjuAppSW/
+
+*.jar
+*.properties

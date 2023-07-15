@@ -15,6 +15,6 @@ public interface HeartRepository extends JpaRepository<Heart, Long>  {
     @Query("SELECT COUNT(h) FROM Heart h WHERE h.member.id = :id")
     int findTotalHeartsById(@Param("id") Long id);
 
-    @Query("SELECT h FROM Heart h WHERE h.giveId = :givdId AND h.member.id = :takeId AND h.date = :today")
-    Optional<Heart> findEqualHeartByIdAndDate(@Param("today") LocalDate today, @Param("giveId") Long givdId, @Param("takeId") Long takeId);
+    @Query("SELECT h FROM Heart h WHERE h.giveId = :giveId AND h.member.id = :takeId AND h.date = :today")
+    Optional<Heart> findEqualHeartByIdAndDate(@Param("today") LocalDate today, @Param("giveId") Long giveId, @Param("takeId") Long takeId);
 }

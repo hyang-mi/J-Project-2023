@@ -18,11 +18,22 @@ public class VoteReport {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Category_id", nullable = false)
+    @JoinColumn(name = "Vote_id", nullable = false)
     private Vote vote;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Category_id", nullable = false)
+    private ReportCategory reportCategory;
 
     private String content;
 
     @Column(nullable = false)
     private LocalDateTime date;
+
+    public VoteReport(Vote vote, ReportCategory reportCategory, String content, LocalDateTime date) {
+        this.vote = vote;
+        this.reportCategory = reportCategory;
+        this.content = content;
+        this.date = date;
+    }
 }

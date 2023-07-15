@@ -29,7 +29,7 @@ public class Heart {
     @Column(nullable = false)
     private Boolean named;
 
-    public Heart(long giveId, Member member, LocalDate date, boolean named) {
+    public Heart(Long giveId, Member member, LocalDate date, Boolean named) {
         this.giveId = giveId;
         this.member = member;
         this.date = date;

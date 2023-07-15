@@ -32,13 +32,14 @@ public class Member {
     @Column(length = 15)
     private String introduce;
 
-    private String imagePath; // 사진 경로
+    private Boolean basicProfile;
 
     @Column(length = 6)
     private String certifyNum;
 
-    public Member(String name, Long kId) {
+    public Member(String name, Long kId, Boolean basieProfile) {
         this.name = name;
         this.kId = kId;
+        this.basicProfile = basieProfile;
     }
 }

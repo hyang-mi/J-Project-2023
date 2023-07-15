@@ -1,12 +1,13 @@
 package com.mjuAppSW.appName.domain.vote;
 
-import com.mjuAppSW.appName.domain.VoteCategory.VoteCategory;
+import com.mjuAppSW.appName.domain.voteCategory.VoteCategory;
 import com.mjuAppSW.appName.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -30,15 +31,16 @@ public class Vote {
     private VoteCategory voteCategory;
 
     @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDate date; // 변환 방법 알아봐야
 
     private String hint;
 
     // 테스트 용도 생성자
-    public Vote(Long giveId, Member member, VoteCategory voteCategory, LocalDateTime date) {
+    public Vote(Long giveId, Member member, VoteCategory voteCategory, LocalDate date, String hint) {
         this.giveId = giveId;
         this.member = member;
         this.voteCategory = voteCategory;
         this.date = date;
+        this.hint = hint;
     }
 }

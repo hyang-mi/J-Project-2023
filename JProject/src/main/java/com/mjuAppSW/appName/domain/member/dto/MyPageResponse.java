@@ -7,10 +7,10 @@ import java.util.List;
 @Data
 public class MyPageResponse {
     private String name;
-    private String base64Image;
+    private String base64Picture;
     private String introduce;
-    private int todayHeart;
-    private int totalHeart;
+    private Integer todayHeart;
+    private Integer totalHeart;
     private List<String> voteTop3;
 
     public MyPageResponse(String name, String introduce) {
