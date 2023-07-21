@@ -1,5 +1,6 @@
-package com.mjuAppSW.appName.picture;
+package com.mjuAppSW.appName.domain.member.picture;
 
+import com.mjuAppSW.appName.domain.member.picture.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -56,7 +57,7 @@ public class RedisUploader {
             return object.toString().getBytes(StandardCharsets.UTF_8);
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(cron = "0 0 4 * * *")
     public void putAndDelete() {
         Set<String> keys = getAllKeys();
         for (String key : keys) {
