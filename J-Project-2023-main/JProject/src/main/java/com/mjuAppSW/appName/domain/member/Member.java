@@ -38,4 +38,7 @@ public class Member {
     @OneToMany(mappedBy = "memberId")
     private List<Room_in_member> roomInMember = new ArrayList<>();
 
+    public Member(long memberId){
+        this.id = memberId;
+    }
 }

@@ -1,11 +1,12 @@
 package com.mjuAppSW.appName.domain.room_in_member.dto;
 
-import lombok.Data;
-
-@Data
-public class RoomListResponse {
-    private long roomId;
-    private String name;
-    private String imagePath;
+import com.mjuAppSW.appName.domain.room.Room;
+public interface RoomListResponse {
+//    private final Room roomId;
+//    private final String name;
+//    private final String imagePath;
+    Room getRoom();
+    String getName();
+    String getImagePath();
     // 최근 메시지 추가
 }

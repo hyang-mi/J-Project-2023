@@ -14,7 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Table(name="Message")
 public class Message {
-    @Id
+    @Id @GeneratedValue
     @Column(nullable = false)
     private long messageId;
 
@@ -35,4 +35,8 @@ public class Message {
 
     @Column(nullable = false)
     private char isChecked;
+
+    public Message(long messageId){
+        this.messageId = messageId;
+    }
 }

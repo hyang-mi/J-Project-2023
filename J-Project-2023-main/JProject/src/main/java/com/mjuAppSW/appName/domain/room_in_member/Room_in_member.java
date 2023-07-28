@@ -38,11 +38,17 @@ public class Room_in_member{
     @Temporal(TemporalType.TIMESTAMP)
     private Date exitTime;
 
+
     public Room_in_member(Room room, Member member, char expired, char result){
         this.roomId = room;
         this.memberId = member;
         this.expired = expired;
         this.result = result;
+    }
+
+    public Room_in_member(Room room, Member member){
+        this.roomId = room;
+        this.memberId = member;
     }
 
     public static Room_in_member createRoomItem(Room room, Member member, char expired, char result){

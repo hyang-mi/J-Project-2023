@@ -1,33 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f3396ef0-90e2-41a8-8dfd-02f6a1ca5a25" name="Changes" comment="" />
+    <list default="true" id="f3396ef0-90e2-41a8-8dfd-02f6a1ca5a25" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/member/Member.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/member/Member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/message/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/message/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/message/Message_report.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/RoomApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/RoomApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/RoomDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/RoomRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/RoomRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/RoomService.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room/RoomService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_ApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_ApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_Repository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_Service.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_Service.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/dto/RoomListRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/dto/RoomListRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/dto/RoomListResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/domain/room_in_member/dto/RoomListResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/websocket/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/websocket/config/WebSocketConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/websocket/controller/WebSocketHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/java/com/mjuAppSW/appName/websocket/controller/WebSocketHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/test/java/com/mjuAppSW/appName/domain/member/MemberServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/test/java/com/mjuAppSW/appName/domain/member/MemberServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/test/java/com/mjuAppSW/appName/domain/room/RoomDTOTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/test/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_ServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/J-Project-2023-main/JProject/src/test/java/com/mjuAppSW/appName/domain/room_in_member/Room_in_member_ServiceTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="ProjectId" id="2S2ovPLhUTD2tQjqM8U1G5GAnXe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
+      <changelist id="f3396ef0-90e2-41a8-8dfd-02f6a1ca5a25" name="Changes" comment="" />
       <created>1688354277564</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1688354277564</updated>
       <workItem from="1688354277567" duration="4000" />
+      <workItem from="1690525709129" duration="11000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

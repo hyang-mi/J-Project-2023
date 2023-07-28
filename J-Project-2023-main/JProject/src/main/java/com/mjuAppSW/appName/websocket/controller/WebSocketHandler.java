@@ -60,7 +60,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
         }else if(check.equals("M")){ // Message에 관한 로직
             String roomId = arr[1];
-            String memberId1 = arr[2];
+            String memberId = arr[2];
             String content = arr[3];
         }
     }
@@ -73,7 +73,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception{
-
+        sessions.remove(session);
     }
-
 }

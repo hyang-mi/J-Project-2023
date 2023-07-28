@@ -37,6 +37,9 @@ public class Room{
         this.status = status;
     }
 
+    public Room(long roomId) {
+        this.roomId = roomId;
+    }
 
     public static Room createRoomItem(Date date, char c){
         Room room = new Room();
