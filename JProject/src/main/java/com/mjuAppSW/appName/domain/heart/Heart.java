@@ -3,6 +3,7 @@ package com.mjuAppSW.appName.domain.heart;
 import com.mjuAppSW.appName.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.time.LocalDate;
@@ -16,7 +17,7 @@ public class Heart {
     @Column(name = "Heart_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "Give_id", nullable = false)
     private Long giveId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,6 +30,7 @@ public class Heart {
     @Column(nullable = false)
     private Boolean named;
 
+    @Builder
     public Heart(Long giveId, Member member, LocalDate date, Boolean named) {
         this.giveId = giveId;
         this.member = member;

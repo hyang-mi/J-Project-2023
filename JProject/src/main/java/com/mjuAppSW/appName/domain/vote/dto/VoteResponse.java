@@ -1,8 +1,8 @@
-package com.mjuAppSW.appName.domain.vote;
+package com.mjuAppSW.appName.domain.vote.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class VoteResponse {
     private Integer status;
 

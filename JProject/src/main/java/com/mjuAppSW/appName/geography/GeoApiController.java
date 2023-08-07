@@ -1,32 +1,30 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
-import com.mjuAppSW.appName.domain.geography.dto.NearByListResponse;
-import com.mjuAppSW.appName.domain.geography.dto.OwnerRequest;
-import com.mjuAppSW.appName.domain.geography.dto.LocationRequest;
+import com.mjuAppSW.appName.geography.dto.NearByListResponse;
+import com.mjuAppSW.appName.geography.dto.OwnerRequest;
+import com.mjuAppSW.appName.geography.dto.LocationRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @Slf4j
 @RequiredArgsConstructor
-@Validated
 public class GeoApiController {
 
     private final GeoService geoService;
 
     @PostMapping("geo/update")
-    public void updateLocation(@RequestBody @Valid LocationRequest request) {
+    public HttpStatus updateLocation(@RequestBody @Valid LocationRequest request) {
         log.info("위치 업데이트 api 요청");
         log.info("id = {}, latitude = {}, longitude = {}, altitude = {}",
                 request.getId(), request.getLatitude(), request.getLongitude(), request.getAltitude());
         geoService.updateLocation(request);
+        return HttpStatus.OK;
     }
 
     @GetMapping("geo/get")
@@ -38,8 +36,10 @@ public class GeoApiController {
         return geoService.getNearByList(request);
     }
 
-    @PostMapping("get/delete")
+    @PostMapping("geo/delete")
     public void deleteLocation(@RequestBody @Valid OwnerRequest request) {
+        log.info("위치 삭제 api 요청");
+        log.info("id = {}", request.getId());
         geoService.deleteLocation(request);
     }
 }

@@ -1,5 +1,6 @@
 package com.mjuAppSW.appName.domain.vote;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,5 +18,5 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
     Optional<Vote> findEqualVote(@Param("giveId")Long giveId, @Param("takeId")Long takeId, @Param("categoryId")Long categoryId, @Param("today") LocalDate today);
 
     @Query("SELECT v FROM Vote v WHERE v.member.id = :takeId ORDER BY v.date DESC")
-    List<Vote> findAllByTakeId(@Param("takeId") Long takeId, Pageable pageable); // N+1 문제?
+    List<Vote> findAllByTakeId(@Param("takeId") Long takeId, Pageable pageable);
 }

@@ -4,6 +4,7 @@ import com.mjuAppSW.appName.domain.voteCategory.VoteCategory;
 import com.mjuAppSW.appName.domain.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +20,7 @@ public class Vote {
     @Column(name = "Vote_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "Give_id", nullable = false)
     private Long giveId;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,7 +36,7 @@ public class Vote {
 
     private String hint;
 
-    // 테스트 용도 생성자
+    @Builder
     public Vote(Long giveId, Member member, VoteCategory voteCategory, LocalDate date, String hint) {
         this.giveId = giveId;
         this.member = member;

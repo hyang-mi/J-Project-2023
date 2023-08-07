@@ -1,11 +1,28 @@
 package com.mjuAppSW.appName.domain.vote.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class SendRequest {
+    @JsonProperty("giveId")
+    @NotBlank
     private Long giveId;
+
+    @JsonProperty("takeId")
+    @NotBlank
     private Long takeId;
-    private Long CategoryId;
+
+    @JsonProperty("categoryId")
+    @NotBlank
+    private Long categoryId;
+
+    @JsonProperty("hint")
+    @Size(max = 15)
     private String hint;
 }

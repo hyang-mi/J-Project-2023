@@ -1,10 +1,15 @@
-package com.mjuAppSW.appName.domain.geography.dto;
+package com.mjuAppSW.appName.geography.dto;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 public class NearByListResponse {
     private List<NearByInfo> nearByList;
+
+    public NearByListResponse(List<NearByInfo> nearByList) {
+        this.nearByList = nearByList;
+    }
 }

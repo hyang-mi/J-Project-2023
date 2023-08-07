@@ -1,8 +1,10 @@
 package com.mjuAppSW.appName.domain.member.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@Data
+@Builder
+@Getter
 public class SetResponse {
     private String name;
     private String base64Picture;

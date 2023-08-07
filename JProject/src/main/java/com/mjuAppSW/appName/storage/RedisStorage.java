@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.member;
+package com.mjuAppSW.appName.storage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ public class RedisStorage {
     private final RedisTemplate<String, String> redisTemplate;
 
     public void setCertifyNum(Long memberId, int certifyNum) {
-        redisTemplate.opsForValue().set(String.valueOf(memberId), String.valueOf(certifyNum), 180, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set(String.valueOf(memberId), String.valueOf(certifyNum), 420, TimeUnit.SECONDS);
     }
 
     public String getCertifyNum(Long memberId) {

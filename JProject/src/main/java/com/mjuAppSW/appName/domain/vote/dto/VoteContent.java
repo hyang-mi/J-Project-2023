@@ -1,16 +1,16 @@
 package com.mjuAppSW.appName.domain.vote.dto;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NonNull;
 
-@Data
+@Builder
+@Getter
 public class VoteContent {
+    @NonNull
     private Long voteId;
+    @NonNull
     private Long categoryId;
-    private String hint;
 
-    public VoteContent(Long voteId, Long categoryId, String hint) {
-        this.voteId = voteId;
-        this.categoryId = categoryId;
-        this.hint = hint;
-    }
+    private String hint;
 }

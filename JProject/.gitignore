@@ -36,11 +36,12 @@ out/
 ### VS Code ###
 .vscode/
 
-# Application-specific configuration
-/application.yml
 
 # Ignore test package
 /src/test/java/com/mjuAppSW/
 
+# Setting file
 *.jar
 *.properties
+*.yml
+/.DS_Store/

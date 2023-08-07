@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.repository.JpaRepository;

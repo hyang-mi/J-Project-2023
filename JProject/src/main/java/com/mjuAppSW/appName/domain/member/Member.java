@@ -1,45 +1,43 @@
 package com.mjuAppSW.appName.domain.member;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.mjuAppSW.appName.domain.heart.Heart;
-import com.mjuAppSW.appName.domain.vote.Vote;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
-    @Id @GeneratedValue
+    @Id
     @Column(name = "Member_id")
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "K_id", nullable = false)
     private Long kId;
 
+    @Column(name = "U_email")
     private String uEmail;
 
     @Column(length = 15)
-    private String introduce;
+    private String bio;
 
+    @Column(name = "Basic_profile")
     private Boolean basicProfile;
 
-    @Column(length = 6)
-    private String certifyNum;
+    private Boolean withdrawal;
 
-    public Member(String name, Long kId, Boolean basieProfile) {
+    public Member(Long id, String name, Long kId) {
+        this.id = id;
         this.name = name;
         this.kId = kId;
-        this.basicProfile = basieProfile;
+        this.basicProfile = true;
+        this.withdrawal = false;
+        this.bio = "";
     }
 }

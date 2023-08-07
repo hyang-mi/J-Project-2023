@@ -10,10 +10,10 @@ import java.util.Optional;
 public interface HeartRepository extends JpaRepository<Heart, Long>  {
 
     @Query("SELECT COUNT(h) FROM Heart h WHERE h.member.id = :id AND h.date = :today")
-    int findTodayHeartsById(@Param("today") LocalDate today, @Param("id") Long id);
+    int countTodayHeartsById(@Param("today") LocalDate today, @Param("id") Long id);
 
     @Query("SELECT COUNT(h) FROM Heart h WHERE h.member.id = :id")
-    int findTotalHeartsById(@Param("id") Long id);
+    int countTotalHeartsById(@Param("id") Long id);
 
     @Query("SELECT h FROM Heart h WHERE h.giveId = :giveId AND h.member.id = :takeId AND h.date = :today")
     Optional<Heart> findEqualHeartByIdAndDate(@Param("today") LocalDate today, @Param("giveId") Long giveId, @Param("takeId") Long takeId);

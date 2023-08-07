@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.picture;
+package com.mjuAppSW.appName.storage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

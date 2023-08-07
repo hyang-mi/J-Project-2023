@@ -1,12 +1,13 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
-import com.mjuAppSW.appName.domain.geography.dto.NearByInfo;
+import com.mjuAppSW.appName.geography.dto.NearByInfo;
 import com.mjuAppSW.appName.domain.member.Member;
 import com.mjuAppSW.appName.domain.member.MemberRepository;
-import com.mjuAppSW.appName.domain.geography.dto.LocationRequest;
-import com.mjuAppSW.appName.domain.geography.dto.NearByListResponse;
-import com.mjuAppSW.appName.domain.geography.dto.OwnerRequest;
+import com.mjuAppSW.appName.geography.dto.LocationRequest;
+import com.mjuAppSW.appName.geography.dto.NearByListResponse;
+import com.mjuAppSW.appName.geography.dto.OwnerRequest;
 import com.mjuAppSW.appName.storage.S3Uploader;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -29,8 +30,10 @@ public class GeoService {
     private final MemberRepository memberRepository;
     private final S3Uploader s3Uploader;
 
+    @Transactional
     public void updateLocation(LocationRequest request) {
         Point point = getPoint(request.getLatitude(), request.getLongitude(), request.getAltitude());
+        log.info("point = {}", point);
         Location location = new Location(request.getId(), point);
         geoRepository.save(location);
     }
@@ -38,23 +41,22 @@ public class GeoService {
     public NearByListResponse getNearByList(LocationRequest request) {
         Point point = getPoint(request.getLatitude(), request.getLongitude(), request.getAltitude());
         List<Long> nearIds = geoRepository.findNearById(request.getId(), point);
-
         List<NearByInfo> nearByInfos = new ArrayList<>();
 
         for (Long nearId : nearIds) {
-            Member member = memberRepository.findById(nearId).orElseThrow();
+            Member member = memberRepository.findById(nearId).orElseThrow(); // 어떡하지?
             String base64Picture = null;
             if(!member.getBasicProfile())
                 base64Picture = s3Uploader.getPicture(String.valueOf(member.getId()));
-            nearByInfos.add(new NearByInfo(member.getName(), base64Picture, member.getBio()));
+
+            nearByInfos.add(NearByInfo.builder().name(member.getName())
+                                                .base64Picture(base64Picture)
+                                                .bio(member.getBio()).build());
         }
-
-        NearByListResponse nearByList = new NearByListResponse();
-        nearByList.setNearByList(nearByInfos);
-
-        return nearByList;
+        return new NearByListResponse(nearByInfos);
     }
 
+    @Transactional
     public void deleteLocation(OwnerRequest request) {
         geoRepository.deleteById(request.getId());
     }

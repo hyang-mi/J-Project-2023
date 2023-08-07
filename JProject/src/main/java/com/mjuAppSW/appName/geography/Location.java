@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
