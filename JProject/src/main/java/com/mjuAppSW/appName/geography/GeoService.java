@@ -1,10 +1,12 @@
-package com.mjuAppSW.appName.domain.member.geography;
+package com.mjuAppSW.appName.domain.geography;
 
+import com.mjuAppSW.appName.domain.geography.dto.NearByInfo;
 import com.mjuAppSW.appName.domain.member.Member;
 import com.mjuAppSW.appName.domain.member.MemberRepository;
-import com.mjuAppSW.appName.domain.member.geography.dto.MemberLocation;
-import com.mjuAppSW.appName.domain.member.geography.dto.NearByInfo;
-import com.mjuAppSW.appName.domain.member.picture.RedisUploader;
+import com.mjuAppSW.appName.domain.geography.dto.LocationRequest;
+import com.mjuAppSW.appName.domain.geography.dto.NearByListResponse;
+import com.mjuAppSW.appName.domain.geography.dto.OwnerRequest;
+import com.mjuAppSW.appName.storage.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -26,36 +27,42 @@ public class GeoService {
 
     private final GeoRepository geoRepository;
     private final MemberRepository memberRepository;
-    private final RedisUploader redisUploader;
+    private final S3Uploader s3Uploader;
 
-    public void updateLocation(MemberLocation request) {
-        Point point = getPoint(request.getLatitude(), request.getLongitude());
-        geoRepository.save(new Location(request.getId(), point));
+    public void updateLocation(LocationRequest request) {
+        Point point = getPoint(request.getLatitude(), request.getLongitude(), request.getAltitude());
+        Location location = new Location(request.getId(), point);
+        geoRepository.save(location);
     }
 
-    public List<NearByInfo> getNearByList(MemberLocation request) {
-        Point point = getPoint(request.getLatitude(), request.getLongitude());
-        List<Long> nearByIds = geoRepository.findNearByIds(request.getId(), point);
+    public NearByListResponse getNearByList(LocationRequest request) {
+        Point point = getPoint(request.getLatitude(), request.getLongitude(), request.getAltitude());
+        List<Long> nearIds = geoRepository.findNearById(request.getId(), point);
 
-        List<NearByInfo> nearByList = new ArrayList<>();
+        List<NearByInfo> nearByInfos = new ArrayList<>();
 
-        for (Long id : nearByIds) {
-            Optional<Member> findMember = memberRepository.findById(id);
-            if(findMember.isEmpty()) continue; // 다른 예외 처리 필요할 듯
-
-            Member member = findMember.get();
+        for (Long nearId : nearIds) {
+            Member member = memberRepository.findById(nearId).orElseThrow();
             String base64Picture = null;
             if(!member.getBasicProfile())
-                base64Picture = redisUploader.bringPicture(member.getId());
-            nearByList.add(new NearByInfo(member.getName(), base64Picture, member.getBio()));
+                base64Picture = s3Uploader.getPicture(String.valueOf(member.getId()));
+            nearByInfos.add(new NearByInfo(member.getName(), base64Picture, member.getBio()));
         }
+
+        NearByListResponse nearByList = new NearByListResponse();
+        nearByList.setNearByList(nearByInfos);
 
         return nearByList;
     }
 
-    private Point getPoint(double latitude, double longitude) {
+    public void deleteLocation(OwnerRequest request) {
+        geoRepository.deleteById(request.getId());
+    }
+
+    private Point getPoint(double latitude, double longitude, double altitude) {
         GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
-        Point point = geometryFactory.createPoint(new Coordinate(latitude, longitude));
+        Coordinate coordinate = new Coordinate(longitude, latitude, altitude);
+        Point point = geometryFactory.createPoint(coordinate);
         return point;
     }
 }

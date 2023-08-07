@@ -1,11 +1,11 @@
-package com.mjuAppSW.appName.geography;
+package com.mjuAppSW.appName.domain.geography;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.hibernate.annotations.Type;
+import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Point;
 
 @Entity
@@ -17,7 +17,7 @@ public class Location {
     @Column(name = "Member_id")
     private Long id; // 멤버 아이디와 동일하게
 
-    @Column(columnDefinition = "geometry(Point, 4326)")
+    @Column(name = "Member_point", columnDefinition = "geometry(PointZ, 4326)")
     private Point point;
 
     public Location(Long id, Point point){

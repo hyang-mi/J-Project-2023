@@ -1,31 +1,45 @@
-package com.mjuAppSW.appName.geography;
+package com.mjuAppSW.appName.domain.geography;
 
-import com.mjuAppSW.appName.geography.dto.MemberLocation;
-import com.mjuAppSW.appName.geography.dto.NearByInfo;
+import com.mjuAppSW.appName.domain.geography.dto.NearByListResponse;
+import com.mjuAppSW.appName.domain.geography.dto.OwnerRequest;
+import com.mjuAppSW.appName.domain.geography.dto.LocationRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-
-import java.util.List;
-
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequiredArgsConstructor
 @Slf4j
-public class GeoController {
+@RequiredArgsConstructor
+@Validated
+public class GeoApiController {
 
     private final GeoService geoService;
 
-    // 내 위치 업데이트 (5m 기준)
-    @MessageMapping("/geo/update")
-    public void updateLocation(MemberLocation request) {geoService.updateLocation(request); }
+    @PostMapping("geo/update")
+    public void updateLocation(@RequestBody @Valid LocationRequest request) {
+        log.info("위치 업데이트 api 요청");
+        log.info("id = {}, latitude = {}, longitude = {}, altitude = {}",
+                request.getId(), request.getLatitude(), request.getLongitude(), request.getAltitude());
+        geoService.updateLocation(request);
+    }
 
-    // 저장된 위치 기준 반경 100m 내에서 가장 가까운 순으로 50명 반환 (30초마다 요청, 거의 실시간 반환, 성능테스트 필요)
-    @MessageMapping("/geo/get")
-    @SendTo("/geo/get/list")
-    public List<NearByInfo> getNearByList(MemberLocation request) {
+    @GetMapping("geo/get")
+    public NearByListResponse getNearByList(@RequestParam Long id, @RequestParam Double latitude,
+                                            @RequestParam Double longitude, @RequestParam Double altitude) {
+        log.info("주변 사람 불러오기 api 요청");
+        log.info("id = {}, latitude = {}, longitude = {}, altitude = {}", id, latitude, longitude, altitude);
+        LocationRequest request = new LocationRequest(id, latitude, longitude, altitude);
         return geoService.getNearByList(request);
+    }
+
+    @PostMapping("get/delete")
+    public void deleteLocation(@RequestBody @Valid OwnerRequest request) {
+        geoService.deleteLocation(request);
     }
 }
