@@ -1,12 +1,12 @@
 package com.mjuAppSW.appName.geography.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class OwnerRequest {
     @JsonProperty("id")
-    @NotBlank
+    @NotNull
     private Long id;
 }

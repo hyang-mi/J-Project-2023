@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class UNumRequest {
     @JsonProperty("id")
-    @NotBlank
+    @NotNull
     private Long id;
 
     @JsonProperty("certifyNum")

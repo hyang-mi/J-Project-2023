@@ -1,8 +1,8 @@
 package com.mjuAppSW.appName.domain.member.dto;
 
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class LoginResponse {
     private Long id;
     private String name;

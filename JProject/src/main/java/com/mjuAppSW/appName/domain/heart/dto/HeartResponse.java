@@ -1,9 +1,9 @@
 package com.mjuAppSW.appName.domain.heart.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 public class HeartResponse {
     private Integer status;
     private Boolean isMatched;

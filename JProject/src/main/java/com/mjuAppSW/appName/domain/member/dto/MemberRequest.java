@@ -10,6 +10,6 @@ import lombok.NonNull;
 @Getter
 public class MemberRequest {
     @JsonProperty("id")
-    @NotBlank
+    @NotNull
     private Long id;
 }

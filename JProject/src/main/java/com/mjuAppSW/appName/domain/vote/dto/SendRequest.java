@@ -11,15 +11,15 @@ import lombok.Getter;
 @Getter
 public class SendRequest {
     @JsonProperty("giveId")
-    @NotBlank
+    @NotNull
     private Long giveId;
 
     @JsonProperty("takeId")
-    @NotBlank
+    @NotNull
     private Long takeId;
 
     @JsonProperty("categoryId")
-    @NotBlank
+    @NotNull
     private Long categoryId;
 
     @JsonProperty("hint")

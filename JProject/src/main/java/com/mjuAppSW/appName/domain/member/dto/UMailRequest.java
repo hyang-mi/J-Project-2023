@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public class UMailRequest {
     @JsonProperty("id")
-    @NotBlank
+    @NotNull
     private Long id;
 
     @JsonProperty("uEmail")

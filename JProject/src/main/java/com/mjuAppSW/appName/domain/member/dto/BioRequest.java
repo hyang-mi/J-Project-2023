@@ -9,10 +9,9 @@ import lombok.Getter;
 @Getter
 public class BioRequest {
     @JsonProperty("id")
-    @NotBlank
+    @NotNull
     private Long id;
 
     @JsonProperty("bio")
-    @NotNull
     private String bio;
 }

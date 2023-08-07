@@ -1,6 +1,5 @@
 package com.mjuAppSW.appName.geography.dto;
 
-import lombok.Data;
 import lombok.Getter;
 
 import java.util.List;

@@ -1,27 +1,26 @@
 package com.mjuAppSW.appName.geography.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
 public class LocationRequest {
 
     @JsonProperty("id")
-    @NotBlank
+    @NotNull
     private Long id;
 
     @JsonProperty("latitude")
-    @NotBlank
+    @NotNull
     private Double latitude;
 
     @JsonProperty("longitude")
-    @NotBlank
+    @NotNull
     private Double longitude;
 
     @JsonProperty("altitude")
-    @NotBlank
+    @NotNull
     private Double altitude;
 
     public LocationRequest(Long id, Double latitude, Double longitude, Double altitude) {

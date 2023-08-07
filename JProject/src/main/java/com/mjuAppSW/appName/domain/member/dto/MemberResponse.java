@@ -1,6 +1,5 @@
 package com.mjuAppSW.appName.domain.member.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
