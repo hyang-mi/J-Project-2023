@@ -44,7 +44,8 @@ public class GeoService {
         List<NearByInfo> nearByInfos = new ArrayList<>();
 
         for (Long nearId : nearIds) {
-            Member member = memberRepository.findById(nearId).orElseThrow(); // 어떡하지?
+            Member member = memberRepository.findById(nearId).orElse(null);
+            if(member == null) continue;
             String base64Picture = null;
             if(!member.getBasicProfile())
                 base64Picture = s3Uploader.getPicture(String.valueOf(member.getId()));
