@@ -1,5 +1,6 @@
-package com.mjuAppSW.appName.geography;
+package com.mjuAppSW.appName.domain.geography;
 
+import com.mjuAppSW.appName.domain.college.College;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,6 +20,14 @@ public class Location {
 
     @Column(name = "Member_point", columnDefinition = "geometry(PointZ, 4326)")
     private Point point;
+
+    @Column(name = "Column_id")
+    private Long collegeId; // 학교 아이디와 동일하게
+
+    public Location(Long id, Long collegeId) {
+        this.id = id;
+        this.collegeId = collegeId;
+    }
 
     public Location(Long id, Point point){
         this.id = id;

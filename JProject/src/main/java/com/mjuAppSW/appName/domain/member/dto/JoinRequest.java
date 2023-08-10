@@ -8,7 +8,11 @@ import lombok.Getter;
 
 @Getter
 public class LoginRequest {
-    @JsonProperty("accessToken")
+    @JsonProperty("name")
     @NotBlank
-    private String accessToken;
+    private String name;
+
+    @JsonProperty("kId")
+    @NotNull
+    private Long kId;
 }

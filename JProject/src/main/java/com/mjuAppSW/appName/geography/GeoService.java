@@ -1,12 +1,12 @@
-package com.mjuAppSW.appName.geography;
+package com.mjuAppSW.appName.domain.geography;
 
-import com.mjuAppSW.appName.geography.dto.NearByInfo;
+import com.mjuAppSW.appName.domain.geography.dto.NearByInfo;
 import com.mjuAppSW.appName.domain.member.Member;
 import com.mjuAppSW.appName.domain.member.MemberRepository;
-import com.mjuAppSW.appName.geography.dto.LocationRequest;
-import com.mjuAppSW.appName.geography.dto.NearByListResponse;
-import com.mjuAppSW.appName.geography.dto.OwnerRequest;
-import com.mjuAppSW.appName.storage.S3Uploader;
+import com.mjuAppSW.appName.domain.geography.dto.LocationRequest;
+import com.mjuAppSW.appName.domain.geography.dto.NearByListResponse;
+import com.mjuAppSW.appName.domain.geography.dto.OwnerRequest;
+import com.mjuAppSW.appName.storage.RedisCache;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class GeoService {
 
     private final GeoRepository geoRepository;
     private final MemberRepository memberRepository;
-    private final S3Uploader s3Uploader;
+    private final RedisCache redisCache;
 
     @Transactional
     public void updateLocation(LocationRequest request) {
@@ -40,7 +40,8 @@ public class GeoService {
 
     public NearByListResponse getNearByList(LocationRequest request) {
         Point point = getPoint(request.getLatitude(), request.getLongitude(), request.getAltitude());
-        List<Long> nearIds = geoRepository.findNearById(request.getId(), point);
+        Member findMember = memberRepository.findById(request.getId()).orElse(null);
+        List<Long> nearIds = geoRepository.findNearById(request.getId(), point, findMember.getCollege().getId());
         List<NearByInfo> nearByInfos = new ArrayList<>();
 
         for (Long nearId : nearIds) {
@@ -48,7 +49,7 @@ public class GeoService {
             if(member == null) continue;
             String base64Picture = null;
             if(!member.getBasicProfile())
-                base64Picture = s3Uploader.getPicture(String.valueOf(member.getId()));
+                base64Picture = redisCache.getURLCode(member.getId());
 
             nearByInfos.add(NearByInfo.builder().name(member.getName())
                                                 .base64Picture(base64Picture)
