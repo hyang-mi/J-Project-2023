@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.geography.dto;
+package com.mjuAppSW.appName.geography.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,6 +7,6 @@ import lombok.Getter;
 @Getter
 public class NearByInfo {
     private String name;
-    private String base64Picture;
+    private String urlCode;
     private String bio;
 }

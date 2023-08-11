@@ -38,11 +38,11 @@ public class VoteService {
         Member takeMember = memberRepository.findById(request.getTakeId()).orElse(null);
         VoteCategory voteCategory = voteCategoryRepository.findById(request.getCategoryId()).orElse(null);
         if(giveMember == null || takeMember == null || voteCategory == null)
-            return new VoteResponse(2); // 존재하지 않는 Id, 유효하지 않은 접근
+            return new VoteResponse(2);
 
         Optional<Vote> equalVote = voteRepository.findEqualVote(request.getGiveId(), request.getTakeId(), request.getCategoryId(), LocalDate.now());
         if (equalVote.isPresent())
-            return new VoteResponse(1); // 이미 투표를 한 상태
+            return new VoteResponse(1);
 
         Vote vote = Vote.builder().giveId(request.getGiveId())
                                     .member(takeMember)
@@ -50,7 +50,7 @@ public class VoteService {
                                     .date(LocalDate.now())
                                     .hint(request.getHint()).build();
         voteRepository.save(vote);
-        return new VoteResponse(0); // 투표 성공
+        return new VoteResponse(0);
     }
 
     public VoteListResponse getVotes(Long takeId) {
@@ -58,7 +58,7 @@ public class VoteService {
         if(findTakeMember.isEmpty()) return null;
 
         Pageable pageable = PageRequest.of(0, 30);
-        List<Vote> votes = voteRepository.findAllByTakeId(takeId, pageable); // N+1 문제?
+        List<Vote> votes = voteRepository.findAllByTakeId(takeId, pageable);
         List<VoteContent> voteList = new ArrayList<>();
         for (Vote vote : votes) {
             VoteContent voteContent = VoteContent.builder().voteId(vote.getId())
@@ -74,14 +74,14 @@ public class VoteService {
         Vote vote = voteRepository.findById(request.getVoteId()).orElse(null);
         ReportCategory category = reportCategoryRepository.findById(request.getReportId()).orElse(null);
         if (vote == null || category == null)
-            return new VoteResponse(2); // id 존재하지 않음, 유효하지 않은 접근
+            return new VoteResponse(2);
 
         Optional<VoteReport> findReport = voteReportRepository.findByVoteId(request.getVoteId());
         if(findReport.isPresent())
-            return new VoteResponse(1); // 이미 해당 투표에 대한 신고가 존재함
+            return new VoteResponse(1);
 
         VoteReport voteReport = new VoteReport(vote, category, request.getContent(), LocalDateTime.now());
         voteReportRepository.save(voteReport);
-        return new VoteResponse(0); // 신고 저장 성공
+        return new VoteResponse(0);
     }
 }

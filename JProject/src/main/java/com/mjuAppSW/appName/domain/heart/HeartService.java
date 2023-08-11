@@ -4,7 +4,6 @@ import com.mjuAppSW.appName.domain.heart.dto.HeartRequest;
 import com.mjuAppSW.appName.domain.heart.dto.HeartResponse;
 import com.mjuAppSW.appName.domain.member.Member;
 import com.mjuAppSW.appName.domain.member.MemberRepository;
-import com.mjuAppSW.appName.storage.S3Uploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ public class HeartService {
 
     private final HeartRepository heartRepository;
     private final MemberRepository memberRepository;
-    private final S3Uploader s3Uploader;
 
     @Transactional
     public HeartResponse sendHeart(HeartRequest request) {
@@ -44,34 +42,31 @@ public class HeartService {
         heartRepository.save(heart);
         Optional<Heart> opponentHeart = heartRepository.findEqualHeartByIdAndDate(LocalDate.now(), takeId, giveId);
         String giveMemberName = giveMember.getName();
+        String giveUrlCode = null;
+        if(!giveMember.getBasicProfile())
+            giveUrlCode = giveMember.getUrlCode();
 
         if(opponentHeart.isPresent()) {
-            String givePicture = null;
-            String takePicture = null;
-            if(!giveMember.getBasicProfile())
-                givePicture = s3Uploader.getPicture(String.valueOf(giveMember.getId()));
+            String takeMemberName = takeMember.getName();
+            String takeUrlCode = null;
             if(!takeMember.getBasicProfile())
-                takePicture = s3Uploader.getPicture(String.valueOf(takeMember.getId()));
+                takeUrlCode = takeMember.getUrlCode();
             return HeartResponse.builder().status(0)
                                             .isMatched(true)
                                             .giveName(giveMemberName)
-                                            .giveBase64Picture(givePicture)
-                                            .takeBase64Picture(takePicture).build();
-
+                                            .takeName(takeMemberName)
+                                            .giveUrlCode(giveUrlCode)
+                                            .takeUrlCode(takeUrlCode)
+                                            .build();
         }
-        else {
-            if (named)
-                return HeartResponse.builder().status(0)
-                                                .isMatched(false)
-                                                .giveName(giveMemberName)
-                                                .giveBase64Picture(null)
-                                                .takeBase64Picture(null).build();
-            else
-                return HeartResponse.builder().status(0)
-                                                .isMatched(false)
-                                                .giveName(null)
-                                                .giveBase64Picture(null)
-                                                .takeBase64Picture(null).build();
-        }
+        if (named)
+            return HeartResponse.builder().status(0)
+                                            .isMatched(false)
+                                            .giveName(giveMemberName)
+                                            .giveUrlCode(giveUrlCode)
+                                            .build();
+        else
+            return HeartResponse.builder().status(0)
+                                            .isMatched(false).build();
     }
 }

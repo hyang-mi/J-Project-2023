@@ -15,4 +15,12 @@ public class UNumRequest {
     @JsonProperty("certifyNum")
     @NotBlank
     private String certifyNum;
+
+    @JsonProperty("collegeId")
+    @NotNull
+    private Long collegeId;
+
+    @JsonProperty("uEmail")
+    @NotBlank
+    private String uEmail;
 }

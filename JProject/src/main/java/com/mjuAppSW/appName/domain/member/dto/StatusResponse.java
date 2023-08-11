@@ -3,10 +3,10 @@ package com.mjuAppSW.appName.domain.member.dto;
 import lombok.Getter;
 
 @Getter
-public class MemberResponse {
+public class StatusResponse {
     private Integer status;
 
-    public MemberResponse(Integer status) {
+    public StatusResponse(Integer status) {
         this.status = status;
     }
 }

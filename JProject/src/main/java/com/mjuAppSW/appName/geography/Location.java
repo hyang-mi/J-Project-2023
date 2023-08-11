@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
 import com.mjuAppSW.appName.domain.college.College;
 import jakarta.persistence.*;
@@ -21,7 +21,7 @@ public class Location {
     @Column(name = "Member_point", columnDefinition = "geometry(PointZ, 4326)")
     private Point point;
 
-    @Column(name = "Column_id")
+    @Column(name = "College_id")
     private Long collegeId; // 학교 아이디와 동일하게
 
     public Location(Long id, Long collegeId) {

@@ -15,4 +15,7 @@ public class UMailRequest {
     @JsonProperty("uEmail")
     @NotBlank
     private String uEmail;
+
+    @JsonProperty("collegeId")
+    private Long collegeId;
 }

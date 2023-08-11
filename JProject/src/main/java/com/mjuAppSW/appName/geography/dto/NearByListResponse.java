@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.geography.dto;
+package com.mjuAppSW.appName.geography.dto;
 
 import lombok.Getter;
 

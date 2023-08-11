@@ -1,5 +1,6 @@
 package com.mjuAppSW.appName;
 
+import com.mjuAppSW.appName.domain.college.College;
 import com.mjuAppSW.appName.domain.heart.Heart;
 import com.mjuAppSW.appName.domain.member.Member;
 import com.mjuAppSW.appName.domain.report.ReportCategory;
@@ -21,6 +22,7 @@ public class InitDb {
 
     @PostConstruct
     public void init() {
+        initService.initCollege();
         initService.initVoteCategory();
         initService.initReportCategory();
         initService.initMember();
@@ -40,6 +42,14 @@ public class InitDb {
         Member member1, member2, member3, member4, member5;
         Heart heart1, heart2, heart3, heart4, heart5;
         Vote v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
+        College c1, c2;
+
+        public void initCollege() {
+            c1 = new College(1L, "명지대학교", "@mju.ac.kr");
+            c2 = new College(2L, "애플대학교", "@icloud.com");
+            em.persist(c1);
+            em.persist(c2);
+        }
 
         public void initVoteCategory() {
             vc1 = new VoteCategory("옷");
@@ -122,7 +132,6 @@ public class InitDb {
             em.persist(v8);
             em.persist(v9);
             em.persist(v10);
-
         }
     }
 }

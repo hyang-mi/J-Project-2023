@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,20 +15,22 @@ public class MemberApiController {
 
     private final MemberService memberService;
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
-        LoginResponse response = memberService.login(request);
-        if (response != null)
-            return ResponseEntity.ok(response); // 학교 이메일 data 없으면 null로 응답
-        return ResponseEntity.badRequest().build(); // 사용자 정보 조회 요청 실패 or 유효하지 않은 토큰
+    @PostMapping("/join")
+    public ResponseEntity<JoinResponse> join(@RequestBody @Valid JoinRequest request) {
+        log.info("회원가입 api 요청");
+        log.info("name = {}, kId = {}", request.getName(), request.getKId());
+        JoinResponse response = memberService.join(request);
+        return ResponseEntity.ok(response);
     }
 
+    // 로그인, 로그아웃
+
     @PostMapping("/mail/send")
-    public ResponseEntity<MemberResponse> sendCertifyNum(@RequestBody @Valid UMailRequest request) {
+    public ResponseEntity<StatusResponse> sendCertifyNum(@RequestBody @Valid UMailRequest request) {
         log.info("메일 전송 api 요청");
         log.info("id = {}, email = {} ", request.getId(), request.getUEmail());
 
-        MemberResponse response = memberService.sendCertifyNum(request);
+        StatusResponse response = memberService.sendCertifyNum(request);
         if(response.getStatus() == 0)
             return ResponseEntity.ok(response);
         else
@@ -47,7 +48,7 @@ public class MemberApiController {
             return HttpStatus.OK;
         }
         log.info("return bad request");
-        return HttpStatus.BAD_REQUEST; // 사용자가 존재하지 않거나, 인증 번호가 유효하지 않음
+        return HttpStatus.BAD_REQUEST;
     }
 
     @GetMapping ("/set")
@@ -58,7 +59,7 @@ public class MemberApiController {
         SetResponse response = memberService.set(id);
         if (response != null)
             return ResponseEntity.ok(response);
-        return ResponseEntity.badRequest().build(); // 해당 사용자가 존재하지 않음
+        return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/set/myPage")
@@ -70,27 +71,27 @@ public class MemberApiController {
         if (response != null) {
             return ResponseEntity.ok(response);
         }
-        return ResponseEntity.badRequest().build(); // 해당 사용자가 존재하지 않음
+        return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/set/myPage/picture")
-    public ResponseEntity<MemberResponse> transPicture(@RequestBody @Valid PictureRequest request) {
+    public ResponseEntity<StatusResponse> transPicture(@RequestBody @Valid PictureRequest request) {
         log.info("프로필 사진 변경 api 요청");
         log.info("id = {}, base64Image is null = {}", request.getId(), request.getBase64Picture().isEmpty());
 
-        MemberResponse response = memberService.transPicture(request);
+        StatusResponse response = memberService.transPicture(request);
         if (response.getStatus() == 0) return ResponseEntity.ok(response);
-        return ResponseEntity.badRequest().body(response); // 해당 사용자가 존재하지 않음
+        return ResponseEntity.badRequest().body(response);
     }
 
     @PostMapping("/set/myPage/picture/delete")
-    public HttpStatus deletePicture(@RequestBody @Valid MemberRequest request) {
+    public HttpStatus deletePicture(@RequestBody @Valid IdRequest request) {
         log.info("프로필 사진 삭제 api 요청");
         log.info("id = {}", request.getId());
 
         boolean result = memberService.deletePicture(request);
         if (result) return HttpStatus.OK;
-        return HttpStatus.BAD_REQUEST; // 해당 사용자가 존재하지 않음
+        return HttpStatus.BAD_REQUEST;
     }
 
     @PostMapping("/set/myPage/bio")
@@ -104,19 +105,11 @@ public class MemberApiController {
     }
 
     @PostMapping("/set/withdrawal")
-    public HttpStatus withdrawal(@RequestBody @Valid MemberRequest request) {
+    public HttpStatus withdrawal(@RequestBody @Valid IdRequest request) {
         log.info("회원 탈퇴 api 요청");
         log.info("id = {}", request.getId());
 
         memberService.withdrawal(request);
         return HttpStatus.OK;
     }
-
-//    @GetMapping("/list/profile") // 주변 사람 불러오기로 통일
-//    public ResponseEntity<ProfileResponse> getOtherProfile(@RequestParam Long id) {
-//        ProfileResponse response = memberService.getOtherProfile(id);
-//        if(response != null)
-//            return ResponseEntity.ok(response);
-//        return ResponseEntity.badRequest().build(); // 해당 사용자가 존재하지 않음
-//    }
 }

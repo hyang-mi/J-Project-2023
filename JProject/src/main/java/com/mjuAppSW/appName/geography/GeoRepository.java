@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +16,6 @@ public interface GeoRepository extends JpaRepository<Location, Long> {
             "AND ST_DWithin(:point, l.Member_point, 100) " +
             "AND l.Member_id <> :memberId " +
             "LIMIT 50", nativeQuery = true)
-    List<Long> findNearById(@Param("memberId") Long memberId, @Param("point") Point point, @Param("collegeId") Long CollegeId);
+    List<Long> findNearIds(@Param("memberId") Long memberId, @Param("point") Point point, @Param("collegeId") Long CollegeId);
 
 }

@@ -6,22 +6,25 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class CertifyCache {
+public class RedisCache {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public String createCertifyNum() {
+    public String createCertifyNum(Long memberId) {
         int random = ThreadLocalRandom.current().nextInt(100000, 1000000);
+        String result = String.valueOf(random);
+        redisTemplate.opsForValue().set("C" + memberId, result, 7, TimeUnit.MINUTES);
         log.info("create certify number from cache");
-        return String.valueOf(random);
+        return result;
     }
 
     public String getCertifyNum(Long memberId) {
-        log.info("get URL Code from Cache");
+        log.info("get certify number from Cache");
         return redisTemplate.opsForValue().get("C" + memberId);
     }
 
@@ -30,20 +33,20 @@ public class CertifyCache {
         log.info("delete certify number from cache");
     }
 
-    public void setURLCode(Long memberId, String URL) {
-        log.info("set URL Code in Cache");
-        redisTemplate.opsForValue().set("C" + memberId, URL);
-    }
-
-    public String getURLCode(Long memberId) {
-        log.info("get URL Code from Cache");
-        return redisTemplate.opsForValue().get("U" + memberId);
-    }
-
-    public String deleteURLCode(Long memberId) {
-        log.info("delete URL code from Cache");
-        String urlCode = getURLCode(memberId);
-        redisTemplate.delete("U" + memberId);
-        return urlCode;
-    }
+//    public void setURLCode(Long memberId, String URL) {
+//        log.info("set URL Code in Cache");
+//        redisTemplate.opsForValue().set("U" + memberId, URL);
+//    }
+//
+//    public String getURLCode(Long memberId) {
+//        log.info("get URL Code from Cache");
+//        return redisTemplate.opsForValue().get("U" + memberId);
+//    }
+//
+//    public String deleteURLCode(Long memberId) {
+//        String urlCode = getURLCode(memberId);
+//        redisTemplate.delete("U" + memberId);
+//        log.info("delete URL code from Cache");
+//        return urlCode;
+//    }
 }

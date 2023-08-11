@@ -1,12 +1,11 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
-import com.mjuAppSW.appName.domain.geography.dto.NearByInfo;
+import com.mjuAppSW.appName.geography.dto.NearByInfo;
 import com.mjuAppSW.appName.domain.member.Member;
 import com.mjuAppSW.appName.domain.member.MemberRepository;
-import com.mjuAppSW.appName.domain.geography.dto.LocationRequest;
-import com.mjuAppSW.appName.domain.geography.dto.NearByListResponse;
-import com.mjuAppSW.appName.domain.geography.dto.OwnerRequest;
-import com.mjuAppSW.appName.storage.RedisCache;
+import com.mjuAppSW.appName.geography.dto.LocationRequest;
+import com.mjuAppSW.appName.geography.dto.NearByListResponse;
+import com.mjuAppSW.appName.geography.dto.OwnerRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,6 @@ public class GeoService {
 
     private final GeoRepository geoRepository;
     private final MemberRepository memberRepository;
-    private final RedisCache redisCache;
 
     @Transactional
     public void updateLocation(LocationRequest request) {
@@ -40,20 +38,21 @@ public class GeoService {
 
     public NearByListResponse getNearByList(LocationRequest request) {
         Point point = getPoint(request.getLatitude(), request.getLongitude(), request.getAltitude());
-        Member findMember = memberRepository.findById(request.getId()).orElse(null);
-        List<Long> nearIds = geoRepository.findNearById(request.getId(), point, findMember.getCollege().getId());
+        Member member = memberRepository.findById(request.getId()).orElse(null);
+        //
+        List<Long> nearIds = geoRepository.findNearIds(request.getId(), point, member.getCollege().getId());
         List<NearByInfo> nearByInfos = new ArrayList<>();
 
         for (Long nearId : nearIds) {
-            Member member = memberRepository.findById(nearId).orElse(null);
-            if(member == null) continue;
-            String base64Picture = null;
-            if(!member.getBasicProfile())
-                base64Picture = redisCache.getURLCode(member.getId());
+            Member findMember = memberRepository.findById(nearId).orElse(null);
+            if(findMember == null) continue; //
+            String urlCode = null;
+            if(!findMember.getBasicProfile())
+                urlCode = findMember.getUrlCode();
 
-            nearByInfos.add(NearByInfo.builder().name(member.getName())
-                                                .base64Picture(base64Picture)
-                                                .bio(member.getBio()).build());
+            nearByInfos.add(NearByInfo.builder().name(findMember.getName())
+                                                .urlCode(urlCode)
+                                                .bio(findMember.getBio()).build());
         }
         return new NearByListResponse(nearByInfos);
     }

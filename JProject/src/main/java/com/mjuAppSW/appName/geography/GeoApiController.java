@@ -1,8 +1,8 @@
-package com.mjuAppSW.appName.domain.geography;
+package com.mjuAppSW.appName.geography;
 
-import com.mjuAppSW.appName.domain.geography.dto.NearByListResponse;
-import com.mjuAppSW.appName.domain.geography.dto.OwnerRequest;
-import com.mjuAppSW.appName.domain.geography.dto.LocationRequest;
+import com.mjuAppSW.appName.geography.dto.NearByListResponse;
+import com.mjuAppSW.appName.geography.dto.OwnerRequest;
+import com.mjuAppSW.appName.geography.dto.LocationRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

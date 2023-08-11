@@ -5,12 +5,12 @@ import lombok.Getter;
 @Getter
 public class ProfileResponse {
     private String name;
-    private String base64Picture;
+    private String urlCode;
     private String bio;
 
-    public ProfileResponse(String name, String base64Picture, String bio) {
+    public ProfileResponse(String name, String urlCode, String bio) {
         this.name = name;
-        this.base64Picture = base64Picture;
+        this.urlCode = urlCode;
         this.bio = bio;
     }
 }

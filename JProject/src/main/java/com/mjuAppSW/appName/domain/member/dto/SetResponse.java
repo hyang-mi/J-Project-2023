@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 public class SetResponse {
     private String name;
-    private String base64Picture;
+    private String urlCode;
 }
