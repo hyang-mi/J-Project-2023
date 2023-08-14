@@ -7,7 +7,7 @@ import com.mjuAppSW.appName.domain.heart.HeartRepository;
 import com.mjuAppSW.appName.domain.member.dto.*;
 import com.mjuAppSW.appName.domain.vote.VoteRepository;
 import com.mjuAppSW.appName.geography.GeoRepository;
-import com.mjuAppSW.appName.storage.RedisCache;
+import com.mjuAppSW.appName.storage.CertifyNumManager;
 import com.mjuAppSW.appName.storage.S3Uploader;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +34,7 @@ public class MemberService {
     private final GeoRepository geoRepository;
     private final CollegeRepository collegeRepository;
     private final JavaMailSender javaMailSender;
-    private final RedisCache redisCache;
+    private final CertifyNumManager certifyNumManager;
     private final S3Uploader s3Uploader;
 
     @Transactional
@@ -69,7 +69,7 @@ public class MemberService {
         College college = collegeRepository.findById(request.getCollegeId()).orElse(null);
         if(member == null || college == null) return new StatusResponse(2);
 
-        String certifyNum = redisCache.createCertifyNum(request.getId());
+        String certifyNum = certifyNumManager.put(request.getId());
         sendMail(request.getUEmail(), college.getDomain(), certifyNum);
 
         return new StatusResponse(0);
@@ -90,8 +90,8 @@ public class MemberService {
         College college = collegeRepository.findById(request.getCollegeId()).orElse(null);
         if(member == null || college == null) return false;
 
-        if (request.getCertifyNum().equals(redisCache.getCertifyNum(memberId))) {
-            redisCache.removeCertifyNum(memberId);
+        if (certifyNumManager.compare(memberId, request.getCertifyNum())) {
+            certifyNumManager.delete(memberId);
             member.setUEmailAndCollege(request.getUEmail(), college);
             Location location = new Location(request.getId(), college.getId());
             geoRepository.save(location);

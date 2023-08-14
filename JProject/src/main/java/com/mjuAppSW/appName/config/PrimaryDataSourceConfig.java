@@ -1,10 +1,11 @@
-package com.mjuAppSW.appName.config.dev;
+package com.mjuAppSW.appName.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -22,8 +23,10 @@ import org.springframework.transaction.PlatformTransactionManager;
         basePackages = "com.mjuAppSW.appName.domain",
         entityManagerFactoryRef = "primaryEntityManagerFactory",
         transactionManagerRef = "primaryTransactionManager")
-@Profile("dev")
 public class PrimaryDataSourceConfig {
+
+    @Value("${spring.datasource.primary.hibernate.hbm2ddl.auto}")
+    private String hbm2ddlAuto;
 
     @Primary
     @Bean(name = "primaryDataSource")
@@ -42,7 +45,7 @@ public class PrimaryDataSourceConfig {
 
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        properties.put("hibernate.hbm2ddl.auto", "create");
+        properties.put("hibernate.hbm2ddl.auto", hbm2ddlAuto);
 
         em.setJpaPropertyMap(properties);
         return em;

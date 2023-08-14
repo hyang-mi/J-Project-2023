@@ -39,12 +39,12 @@ public class InitDevDb {
 
         private final EntityManager em;
 
+        College c1, c2;
         VoteCategory vc1, vc2, vc3, vc4, vc5, vc6, vc7, vc8;
         ReportCategory rc1, rc2, rc3;
         Member member1, member2, member3, member4, member5;
         Heart heart1, heart2, heart3, heart4, heart5;
         Vote v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
-        College c1, c2;
 
         public void initCollege() {
             c1 = new College(1L, "명지대학교", "@mju.ac.kr");

@@ -1,7 +1,8 @@
-package com.mjuAppSW.appName.config.dev;
+package com.mjuAppSW.appName.config;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -21,8 +22,10 @@ import java.util.Map;
         basePackages = "com.mjuAppSW.appName.geography",
         entityManagerFactoryRef = "secondaryEntityManagerFactory",
         transactionManagerRef = "secondaryTransactionManager")
-@Profile("dev")
 public class SecondaryDataSourceConfig {
+
+    @Value("${spring.datasource.secondary.hibernate.hbm2ddl.auto}")
+    private String hbm2ddlAuto;
 
     @Bean(name = "secondaryDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.secondary")
@@ -39,7 +42,7 @@ public class SecondaryDataSourceConfig {
 
         Map<String, String> properties = new HashMap<String, String>();
         properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-        properties.put("hibernate.hbm2ddl.auto", "create");
+        properties.put("hibernate.hbm2ddl.auto", hbm2ddlAuto);
         properties.put("hibernate.database-platform", "org.hibernate.spatial.dialect.postgis.PostgisDialect");
 
         em.setJpaPropertyMap(properties);
