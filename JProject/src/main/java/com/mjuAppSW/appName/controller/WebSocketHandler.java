@@ -29,8 +29,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private RoomRepository roomRepository;
     private MemberRepository memberRepository;
 
-    private final static String isChecked = "0";
-
     @Autowired
     public WebSocketHandler(RoomInMemberService roomInMemberService, MessageService messageService,
                             RoomRepository roomRepository, MemberRepository memberRepository){
@@ -45,10 +43,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
         String payload = message.getPayload();
         log.info("payload : {}", payload);
         String[] arr = payload.split(" ", 4);
-        // 받는 형태, String 형태로, R RoomId MemberId MemberId, M RoomId MemberId Content
+
         String check = arr[0];
         Long roomId = Long.parseLong(arr[1]);
-        if(check.equals("R")) { // Room_in_member에 관한 로직
+        if(check.equals("R")) {
             Long memberId1 = Long.parseLong(arr[2]);
             Long memberId2 = Long.parseLong(arr[3]);
 
@@ -59,26 +57,31 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 roomInMemberService.createRoom(roomId, memberId1);
                 roomInMemberService.createRoom(roomId, memberId2);
             }
-        }else if(check.equals("M")){ // Message에 관한 로직
+        }else if(check.equals("M")){
             Long memberId = Long.parseLong(arr[2]);
             String content = arr[3];
-
-            boolean save = messageService.saveMessage(roomId, memberId, content);
-            if(save){
-                System.out.println("Save message : " + content);
-            }else{
-                System.out.println("roomId or memberId is wrong");
-            }
-
-//            messageService.updateIsChecked(roomId, memberId, isChecked);
 
             String stringRoomId = String.valueOf(roomId);
 
             List<WebSocketSession> roomSessionsList = roomSessions.get(stringRoomId);
+            if(roomSessionsList != null){
+                int count = 2;
+                for(WebSocketSession getSession : roomSessionsList){
+                    count--;
+                }
+                String isChecked = String.valueOf(count);
+                boolean save = messageService.saveMessage(roomId, memberId, content, isChecked);
+                if(save){
+                    System.out.println("Save message : " + content);
+                }else{
+                    System.out.println("roomId or memberId is wrong");
+                }
+            }
+
             if (roomSessionsList != null) {
                 for (WebSocketSession targetSession : roomSessionsList) {
-                    if (targetSession.isOpen() && !targetSession.equals(session)) {
-                        targetSession.sendMessage(new TextMessage(content));
+                    if (targetSession.isOpen()  && !targetSession.equals(session)) {
+                        targetSession.sendMessage(new TextMessage(content)); // MessageId 같이 보내기
                     }
                 }
             }
@@ -88,6 +91,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private String getMemberId(WebSocketSession session) throws URISyntaxException {
         URI uri = new URI(session.getUri().toString());
         String query = uri.getQuery();
+        if(query == null){
+            return null;
+        }
         String[] arr = query.split("&");
         String getString = arr[arr.length-1];
         String getMemberId = String.valueOf(getString.charAt(getString.length()-1));
@@ -97,6 +103,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private String getRoomId(WebSocketSession session) throws URISyntaxException {
         URI uri = new URI(session.getUri().toString());
         String query = uri.getQuery();
+        if(query == null){
+            return null;
+        }
         String[] arr = query.split("&");
         String getString = arr[arr.length-2];
         String getId = String.valueOf(getString.charAt(getString.length()-1));
@@ -110,32 +119,44 @@ public class WebSocketHandler extends TextWebSocketHandler {
         System.out.println("roomId : " + roomId);
         String memberId = getMemberId(session);
         System.out.println("memberId : " + memberId);
-        roomSessions.computeIfAbsent(roomId, key -> new ArrayList<>()).add(session);
+        if(roomId == null && memberId == null){
+        }else{
+            roomSessions.computeIfAbsent(roomId, key -> new ArrayList<>()).add(session);
 
+            Boolean updateEntryTime = roomInMemberService.updateEntryTime(roomId, memberId);
+            if(updateEntryTime){
+                System.out.println("update entry time");
+            }else{System.out.println("roomId or memberId is wrong");}
 
-        Boolean updateEntryTime = roomInMemberService.updateEntryTime(roomId, memberId);
-        if(updateEntryTime){
-            System.out.println("update entry time");
-        }else{System.out.println("roomId or memberId is wrong");}
+            Boolean updateIsChecked = messageService.updateIsChecked(roomId, memberId);
+            if(updateIsChecked){
+                System.out.println("update isChecked");
+            }else{System.out.println("roomId or memberId is wrong");}
+        }
     }
 
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception{
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         System.out.println("websocket closed");
         String roomId = getRoomId(session);
         System.out.println("roomId : " + roomId);
         String memberId = getMemberId(session);
         System.out.println("memberId : " + memberId);
-        List<WebSocketSession> roomSessionsList = roomSessions.get(roomId);
-        if (roomSessionsList != null) {
-            roomSessionsList.remove(session);
-            if (roomSessionsList.isEmpty()) {
-                roomSessions.remove(roomId);
+        if(roomId == null && memberId == null){
+        } else {
+            List<WebSocketSession> roomSessionsList = roomSessions.get(roomId);
+            if (roomSessionsList != null) {
+                roomSessionsList.remove(session);
+                if (roomSessionsList.isEmpty()) {
+                    roomSessions.remove(roomId);
+                }
+            }
+            Boolean updateExitTime = roomInMemberService.updateExitTime(roomId, memberId);
+            if (updateExitTime) {
+                System.out.println("update exit time");
+            } else {
+                System.out.println("roomId or memberId is wrong");
             }
         }
-        Boolean updateExitTime = roomInMemberService.updateExitTime(roomId, memberId);
-        if(updateExitTime){
-            System.out.println("update exit time");
-        }else{System.out.println("roomId or memberId is wrong");}
     }
 }

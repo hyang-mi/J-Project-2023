@@ -4,15 +4,15 @@ import lombok.Data;
 
 @Data
 public class RoomDTO {
-    private long roomId;
+    private Long roomId;
     private String name;
-    private String imagePath;
+    private String urlCode;
     private String content;
 
-    public RoomDTO(long roomId, String name, String imagePath, String content) {
+    public RoomDTO(Long roomId, String name, String urlCode, String content) {
         this.roomId = roomId;
         this.name = name;
-        this.imagePath = imagePath;
+        this.urlCode = urlCode;
         this.content = content;
     }
 }

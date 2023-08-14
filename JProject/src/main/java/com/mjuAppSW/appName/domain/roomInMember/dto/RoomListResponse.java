@@ -4,6 +4,6 @@ import com.mjuAppSW.appName.domain.room.Room;
 public interface RoomListResponse {
     Room getRoom();
     String getName();
-    String getImagePath();
+    String getUrlCode();
     String getContent();
 }

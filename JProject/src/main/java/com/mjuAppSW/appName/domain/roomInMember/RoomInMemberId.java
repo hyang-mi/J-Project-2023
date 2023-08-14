@@ -1,6 +1,7 @@
 package com.mjuAppSW.appName.domain.roomInMember;
 
 import lombok.Data;
+
 import java.io.Serializable;
 
 @Data

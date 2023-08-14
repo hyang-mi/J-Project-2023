@@ -1,5 +1,6 @@
 package com.mjuAppSW.appName.domain.room;
 
+import com.mjuAppSW.appName.domain.room.dto.RoomResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +20,11 @@ public class RoomService {
     }
 
     @Transactional
-    public void createRoom(){
+    public RoomResponse createRoom(){
         LocalDateTime currentDateTime = LocalDateTime.now();
-        Room room = Room.createRoomItem(currentDateTime, "1");
-        roomRepository.save(room);
+        Room makeRoom = Room.createRoomItem(currentDateTime, "1");
+        Room room = roomRepository.save(makeRoom);
+        return new RoomResponse(room.getRoomId());
     }
 
     public boolean checkRoomId(Long roomId) {

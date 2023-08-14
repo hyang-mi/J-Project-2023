@@ -17,7 +17,8 @@ import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
-public class InitDb {
+@Profile("dev")
+public class InitDevDb {
 
     private final InitService initService;
 

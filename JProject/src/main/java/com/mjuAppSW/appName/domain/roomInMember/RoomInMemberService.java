@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +63,7 @@ public class RoomInMemberService {
                         if (rim1.getMember() != member) {
                             RoomListResponse rlr = roomInMemberRepository.findByMemberIdAndExpired(rim1.getMember(), rim1.getRoom(), expired);
                             if(rlr != null){
-                                RoomDTO roomDTO = new RoomDTO(rlr.getRoom().getRoomId(), rlr.getName(), rlr.getImagePath(), rlr.getContent());
+                                RoomDTO roomDTO = new RoomDTO(rlr.getRoom().getRoomId(), rlr.getName(), rlr.getUrlCode(), rlr.getContent());
                                 roomDTOList.add(roomDTO);
                             }
                         }
@@ -153,7 +152,7 @@ public class RoomInMemberService {
         Optional<Room> getRoom = roomRepository.findById(roomId);
         if(getRoom.isPresent()){
             Room room = getRoom.get();
-            List<RoomInMember> rimList = roomInMemberRepository.findByRoomId(room);
+            List<RoomInMember> rimList = roomInMemberRepository.findAllRoom(room);
             if(rimList.isEmpty() || rimList == null){
                 return false;
             }
@@ -172,7 +171,7 @@ public class RoomInMemberService {
                 response.add(checkVoteDTO);
             }
             return response;
-        }else{return null;}
+        }else{return new ArrayList<>();}
     }
 
     @Transactional

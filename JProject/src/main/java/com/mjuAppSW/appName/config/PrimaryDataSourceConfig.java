@@ -1,4 +1,4 @@
-package com.mjuAppSW.appName.config;
+package com.mjuAppSW.appName.config.dev;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +10,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -21,6 +22,7 @@ import org.springframework.transaction.PlatformTransactionManager;
         basePackages = "com.mjuAppSW.appName.domain",
         entityManagerFactoryRef = "primaryEntityManagerFactory",
         transactionManagerRef = "primaryTransactionManager")
+@Profile("dev")
 public class PrimaryDataSourceConfig {
 
     @Primary

@@ -11,7 +11,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 @Repository
 public interface RoomInMemberRepository extends JpaRepository<RoomInMember, Long> {
@@ -33,17 +32,36 @@ public interface RoomInMemberRepository extends JpaRepository<RoomInMember, Long
 //            "LEFT JOIN Message mes ON rim.member = mes.member WHERE rim.member = :member AND rim.room = :room AND rim.expired = :expired")
 //    RoomListResponse findByMemberIdAndExpired(@Param("member") Member member, @Param("room") Room room, @Param("expired") String expired);
 
+//    @Query("SELECT rim.room AS room, m.name AS name, m.urlCode AS urlCode, mes.content AS content " +
+//            "FROM RoomInMember rim " +
+//            "LEFT JOIN Member m ON rim.member.id = m.id " +
+//            "LEFT JOIN Room r ON rim.room.roomId = r.roomId " +
+//            "LEFT JOIN Message mes ON rim.member = mes.member " +
+//            "WHERE rim.member = :member AND rim.room = :room AND rim.expired = :expired " +
+//            "AND (mes.content IS NULL OR mes.content IS NOT NULL) " +
+//            "AND mes.time = (SELECT MAX(mes2.time) FROM Message mes2 WHERE mes2.member = rim.member)" )
+//    RoomListResponse findByMemberIdAndExpired(@Param("member") Member member,
+//                                              @Param("room") Room room,
+//                                              @Param("expired") String expired);
+
     @Query("SELECT rim.room AS room, m.name AS name, m.urlCode AS urlCode, mes.content AS content " +
             "FROM RoomInMember rim " +
             "LEFT JOIN Member m ON rim.member.id = m.id " +
             "LEFT JOIN Room r ON rim.room.roomId = r.roomId " +
             "LEFT JOIN Message mes ON rim.member = mes.member " +
             "WHERE rim.member = :member AND rim.room = :room AND rim.expired = :expired " +
-            "AND (mes.content IS NULL OR mes.content IS NOT NULL) " +
-            "AND mes.time = (SELECT MAX(mes2.time) FROM Message mes2 WHERE mes2.member = rim.member)" )
+            "AND (mes.content IS NULL OR mes.content IS NOT NULL OR NOT EXISTS (SELECT 1 FROM Message mes2 WHERE mes2.member = rim.member)) " +
+            "AND (mes.time IS NULL OR mes.time = (SELECT MAX(mes2.time) FROM Message mes2 WHERE mes2.member = rim.member))" )
     RoomListResponse findByMemberIdAndExpired(@Param("member") Member member,
                                               @Param("room") Room room,
                                               @Param("expired") String expired);
+
+
+
+
+
+
+
 
 
 
@@ -86,6 +104,4 @@ public interface RoomInMemberRepository extends JpaRepository<RoomInMember, Long
     @Query("UPDATE RoomInMember rim set rim.exitTime = :date WHERE rim.room = :room and rim.member = :member")
     void updateExitTime(@Param("room") Room room, @Param("member") Member member, @Param("date") LocalDateTime date);
 
-    @Query("SELECT rim FROM RoomInMember rim WHERE rim = :room")
-    List<RoomInMember> findByRoomId(@Param("room") Room room);
 }

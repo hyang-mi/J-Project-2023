@@ -13,6 +13,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@Table(name = "Message")
 public class Message {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)

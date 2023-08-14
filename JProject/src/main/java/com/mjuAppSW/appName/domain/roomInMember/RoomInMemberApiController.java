@@ -21,17 +21,15 @@ public class RoomInMemberApiController {
     }
 
     @GetMapping("/load/roomList")
-    public ResponseEntity<RoomList> getRoomList(
+    public ResponseEntity<List<RoomDTO>> getRoomList(
             @RequestParam("memberId") Long memberId,
             @RequestParam("expired") String expired) {
         log.info("getRoomList");
         log.info("memberId : " + memberId);
         log.info("expired : " + expired);
         RoomList response = roomInMemberService.getRoomList(memberId, expired);
-        if (response.getStatus().equals("0")) {
-            return ResponseEntity.ok(response);
-        }else if(response.getStatus().equals("1")){
-            return ResponseEntity.notFound().build(); // no room
+        if (response.getStatus().equals("0") || response.getStatus().equals("1")) { // 1 = no room;
+            return ResponseEntity.ok(response.getRoomDTOList());
         }
         return ResponseEntity.badRequest().build(); // memberId or expired is wrong
     }
@@ -51,12 +49,12 @@ public class RoomInMemberApiController {
         if(voteDTO != null){
             return ResponseEntity.ok(voteDTO); // 성공
         }
-        return ResponseEntity.badRequest().build(); // 실패
+        return ResponseEntity.notFound().build(); // 실패
     }
 
     @GetMapping("/check/voteResult") // 두 회원의 투표 결과 확인하기
     public ResponseEntity<List<CheckVoteDTO>> checkVoteResult(
-            @RequestParam("roomId") long roomId){
+            @RequestParam("roomId") Long roomId){
         log.info("checkVoteResult");
         log.info("roomId : " + roomId);
         boolean checkRoomIdAndMemberId = roomInMemberService.checkRoomId(roomId);
@@ -71,15 +69,15 @@ public class RoomInMemberApiController {
     }
 
     @PostMapping("/update/expired") // 나간 회원의 expired 1 -> 0으로 업데이트하기
-    public ResponseEntity<String> updateExpired(@RequestBody updateExpiredRequest request){
+    public HttpStatus updateExpired(@RequestBody updateExpiredRequest request){
         log.info("checkVoteResult");
         log.info("roomId : " + request.getRoomId());
         log.info("memberId : " + request.getMemberId());
         log.info("expired : " + request.getExpired());
         boolean save = roomInMemberService.updateExpired(request.getRoomId(), request.getMemberId(), request.getExpired());
         if(!save){
-            return new ResponseEntity<>("roomId or memberId or expired is wrong", HttpStatus.BAD_REQUEST);
+            return HttpStatus.BAD_REQUEST;
         }
-        return new ResponseEntity<>("completed update", HttpStatus.OK);
+        return HttpStatus.OK;
     }
 }
