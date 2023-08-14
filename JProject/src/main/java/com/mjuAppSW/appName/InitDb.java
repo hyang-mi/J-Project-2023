@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -82,11 +83,11 @@ public class InitDb {
         }
 
         public void initMember() {
-            member1 = new Member(1L, "이준호", 1L);
+            member1 = new Member(1L, "최가의", 1L);
             member2 = new Member(2L, "한요한", 2L);
             member3 = new Member(3L, "한태산", 3L);
-            member4 = new Member(4L, "박규리", 4L);
-            member5 = new Member(5L, "양정인", 5L);
+            member4 = new Member(4L, "홍향미", 4L);
+            member5 = new Member(5L, "최종현", 5L);
 
             em.persist(member1);
             em.persist(member2);

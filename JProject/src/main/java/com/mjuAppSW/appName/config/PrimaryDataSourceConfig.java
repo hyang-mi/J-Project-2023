@@ -39,7 +39,7 @@ public class PrimaryDataSourceConfig {
         em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
 
         Map<String, String> properties = new HashMap<String, String>();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         properties.put("hibernate.hbm2ddl.auto", "create");
 
         em.setJpaPropertyMap(properties);

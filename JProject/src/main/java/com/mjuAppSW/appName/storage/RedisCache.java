@@ -32,21 +32,4 @@ public class RedisCache {
         redisTemplate.delete("C" + memberId);
         log.info("delete certify number from cache");
     }
-
-//    public void setURLCode(Long memberId, String URL) {
-//        log.info("set URL Code in Cache");
-//        redisTemplate.opsForValue().set("U" + memberId, URL);
-//    }
-//
-//    public String getURLCode(Long memberId) {
-//        log.info("get URL Code from Cache");
-//        return redisTemplate.opsForValue().get("U" + memberId);
-//    }
-//
-//    public String deleteURLCode(Long memberId) {
-//        String urlCode = getURLCode(memberId);
-//        redisTemplate.delete("U" + memberId);
-//        log.info("delete URL code from Cache");
-//        return urlCode;
-//    }
 }
