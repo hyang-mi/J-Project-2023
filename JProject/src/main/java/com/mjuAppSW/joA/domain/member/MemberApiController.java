@@ -28,29 +28,30 @@ public class MemberApiController {
     }
 
     @PostMapping("/mail/auth")
-    public HttpStatus authCertifyNum(@RequestBody @Valid UNumRequest request) {
+    public ResponseEntity<StatusResponse> authCertifyNum(@RequestBody @Valid UNumRequest request) {
         log.info("메일 인증 api 요청");
         log.info("id = {}, certifyNum = {} ", request.getId(), request.getCertifyNum());
 
-        boolean result = memberService.authCertifyNum(request);
-        return returnHttpStatus(result);
+        StatusResponse response = memberService.authCertifyNum(request);
+        return returnStatusResponse(response);
     }
 
     @GetMapping("/join/verify/id")
-    public ResponseEntity<StatusResponse> verifyId(@RequestParam String loginId) {
+    public ResponseEntity<StatusResponse> verifyId(@RequestParam Long id, @RequestParam String loginId) {
         log.info("id 중복 검증 api 요청");
         log.info("login id = {}", loginId);
 
-        StatusResponse response = memberService.verifyId(loginId);
+        StatusResponse response = memberService.verifyId(id, loginId);
         return returnStatusResponse(response);
     }
 
     @PostMapping("/join")
-    public void join(@RequestBody @Valid JoinRequest request) {
+    public ResponseEntity<StatusResponse> join(@RequestBody @Valid JoinRequest request) {
         log.info("회원가입 api 요청");
-        log.info("name = {}, loginId = {}", request.getName(), request.getLoginId());
+        log.info("name = {}", request.getName());
 
-        memberService.join(request);
+        StatusResponse response = memberService.join(request);
+        return returnStatusResponse(response);
     }
 
     @PostMapping("/login")

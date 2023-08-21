@@ -13,12 +13,13 @@ public interface GeoRepository extends JpaRepository<Location, Long> {
 
     @Query(value = "SELECT l.member_id " +
             "FROM location l " +
-            "WHERE ST_3DDWithin(:point, l.member_point, 2) " +
-            "AND l.college_id = :collegeId " +
-            "AND ST_DWithin(:point, l.member_point, 100) " +
+            "WHERE ST_DWithin(l.member_point, :point, 0.000899) " +
+            "AND ABS(ST_Z(l.Member_point) - ST_Z(:point)) <= 2 " +
             "AND l.member_id <> :memberId " +
+            "AND l.college_id = :collegeId " +
+            "ORDER BY ST_Distance(l.Member_point, :point) " +
             "LIMIT 50", nativeQuery = true)
-    List<Long> findNearIds(@Param("memberId") Long memberId, @Param("point") Point point, @Param("collegeId") Long CollegeId);
+    List<Long> findNearIds(@Param("memberId") Long memberId, @Param("point") Point point, @Param("collegeId") Long collegeId);
 
     @Override
     @Query("SELECT l FROM Location l WHERE l.id = :memberId")

@@ -42,19 +42,19 @@ public class GeoService {
         if(member == null) return null;
 
         List<Long> nearIds = geoRepository.findNearIds(request.getId(), point, member.getCollege().getId());
-        List<NearByInfo> nearByInfos = new ArrayList<>();
+        List<NearByInfo> nearByInfoList = new ArrayList<>();
 
         for (Long nearId : nearIds) {
-            Member findMember = findByMemberId(nearId); //
+            Member findMember = findByMemberId(nearId);
             String urlCode = null;
             if(!findMember.getBasicProfile())
                 urlCode = findMember.getUrlCode();
 
-            nearByInfos.add(NearByInfo.builder().name(findMember.getName())
+            nearByInfoList.add(NearByInfo.builder().name(findMember.getName())
                                                 .urlCode(urlCode)
                                                 .bio(findMember.getBio()).build());
         }
-        return new NearByListResponse(nearByInfos);
+        return new NearByListResponse(nearByInfoList);
     }
 
     @Transactional

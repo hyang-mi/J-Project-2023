@@ -19,7 +19,7 @@ public class VoteApiController {
 
     @PostMapping("/vote/send")
     public ResponseEntity<StatusResponse> sendVote(@RequestBody @Valid SendRequest request) {
-        log.info("투표 보내기 api 요청");
+        log.info("request api send vote");
         log.info("giveId = {}, takeId = {}, categoryId = {}, hint = {}", request.getGiveId(), request.getTakeId(), request.getCategoryId(), request.getHint());
         StatusResponse response = voteService.sendVote(request);
         return returnStatusResponse(response);
@@ -27,7 +27,7 @@ public class VoteApiController {
 
     @GetMapping("/vote/get")
     public ResponseEntity<VoteListResponse> getVotes(@RequestParam("takeId") Long takeId) {
-        log.info("투표 목록 가져오기 api 요청");
+        log.info("request api get votes");
         log.info("takeId = {}", takeId);
         VoteListResponse response = voteService.getVotes(takeId);
         if (response != null)
@@ -38,7 +38,7 @@ public class VoteApiController {
 
     @PostMapping("/vote/report")
     public ResponseEntity<StatusResponse> reportVote(@RequestBody @Valid ReportRequest request) {
-        log.info("투표 신고하기 api 요청");
+        log.info("request api report vote");
         log.info("voteId = {}, reportId = {}, content = {}", request.getVoteId(), request.getReportId(), request.getContent());
         StatusResponse response = voteService.reportVote(request);
         return returnStatusResponse(response);

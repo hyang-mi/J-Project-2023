@@ -92,6 +92,8 @@ public class VoteService {
     }
 
     private Member findByMemberId(Long id) {
-        return memberRepository.findById(id).orElse(null);
+        Member member =  memberRepository.findById(id).orElse(null);
+        if(member.getWithdrawal() == true) return null;
+        return member;
     }
 }

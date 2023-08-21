@@ -15,19 +15,8 @@ public class JoinRequest {
     @NotBlank
     private String name;
 
-    @JsonProperty("loginId")
-    @NotBlank
-    private String loginId;
-
     @JsonProperty("password")
     @NotBlank
     private String password;
 
-    @JsonProperty("uEmail")
-    @NotBlank
-    private String uEmail;
-
-    @JsonProperty("collegeId")
-    @NotNull
-    private Long collegeId;
 }

@@ -20,7 +20,7 @@ public class HeartApiController {
 
     @PostMapping("heart/send")
     public ResponseEntity<HeartResponse> sendHeart(@RequestBody @Valid HeartRequest request) {
-        log.info("하트 전송 api 요청");
+        log.info("request api send heart");
         log.info("giveId = {}, takeId = {}, named = {}", request.getGiveId(), request.getTakeId(), request.getNamed());
         HeartResponse response = heartService.sendHeart(request);
         Integer result = response.getStatus();

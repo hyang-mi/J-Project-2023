@@ -5,6 +5,8 @@ import com.mjuAppSW.joA.geography.dto.IdRequest;
 import com.mjuAppSW.joA.geography.dto.StatusResponse;
 import com.mjuAppSW.joA.geography.dto.UpdateRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,12 @@ public class GeoApiController {
     }
 
     @GetMapping("geo/get")
-    public ResponseEntity<NearByListResponse> getNearByList(@RequestParam Long id, @RequestParam Double latitude,
-                                        @RequestParam Double longitude, @RequestParam Double altitude) {
+    public ResponseEntity<NearByListResponse> getNearByList(@RequestParam @NotNull Long id,
+                                                            @RequestParam @NotBlank Double latitude,
+                                                            @RequestParam @NotBlank Double longitude,
+                                                            @RequestParam @NotBlank Double altitude) {
         log.info("주변 사람 불러오기 api 요청");
+//        log.info("id = {}, latitude = {}, longitude = {}, altitude = {}", request.getId(), request.getLatitude(), request.getLongitude(), request.getAltitude());
         log.info("id = {}, latitude = {}, longitude = {}, altitude = {}", id, latitude, longitude, altitude);
         UpdateRequest request = new UpdateRequest(id, latitude, longitude, altitude);
 
