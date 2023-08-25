@@ -17,8 +17,8 @@ import java.util.List;
 @Table(name="Room")
 public class Room{
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
-    private Long roomId;
+    @Column(name = "Room_id", nullable = false)
+    private Long id;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -36,9 +36,8 @@ public class Room{
     }
 
     public Room(long roomId) {
-        this.roomId = roomId;
+        this.id = roomId;
     }
-
 
     public static Room createRoomItem(LocalDateTime date, String c){
         Room room = new Room();

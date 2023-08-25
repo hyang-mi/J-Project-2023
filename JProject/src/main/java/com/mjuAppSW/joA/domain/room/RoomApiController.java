@@ -26,33 +26,38 @@ public class RoomApiController {
     public ResponseEntity<RoomResponse> createRoom(){
         log.info("createRoom");
         RoomResponse roomResponse = roomService.createRoom();
+        log.info("createRoom Return : roomId = {}", roomResponse.getRoomId());
         return ResponseEntity.ok(roomResponse);
     }
 
     @PostMapping("/check/createdTime") // 방의 생성시간이 24시간이 넘었는지
     public HttpStatus checkCreatedRoom(@RequestBody RoomCheckRequest roomCheckRequest){
-        log.info("checkCreatedRoom");
-        log.info("roomId : " + roomCheckRequest.getRoomId());
+        log.info("checkCreatedTime : roomId = {} ", roomCheckRequest.getRoomId());
         int checkCreatedAt = roomService.checkCreateAtRoom(roomCheckRequest.getRoomId());
         if(checkCreatedAt == 0){
-            return HttpStatus.OK; // 24시간이 넘었을 때
+            log.info("checkCreatedTime Return : OK, over 24hours");
+            return HttpStatus.OK;
         }else if(checkCreatedAt == 1){
-            return HttpStatus.NOT_FOUND; // 24시간이 넘지 않았을 때
+            log.info("checkCreatedTime Return : NOT_FOUND, not over 24hours");
+            return HttpStatus.NOT_FOUND;
         }else{
+            log.warn("checkCreatedTime Return : BAD_REQUEST, roomId's not correct");
+            log.warn("checkCreatedTime : roomId = {}", roomCheckRequest.getRoomId());
             return HttpStatus.BAD_REQUEST;
         }
     }
 
     @PostMapping("/update/createdAt/status") // 투표가 완료되었을 때, 방 상태 없데이트
     public HttpStatus updateRoom(@RequestBody RoomUpdateRequest roomUpdateRequest){
-        log.info("updateRoom");
-        log.info("roomId : " + roomUpdateRequest.getRoomId());
-        log.info("status : " + roomUpdateRequest.getStatus());
+        log.info("updateCreatedAtStatus : roomId = {}, status = {}", roomUpdateRequest.getRoomId(), roomUpdateRequest.getStatus());
         boolean checkRoomId = roomService.checkRoomId(roomUpdateRequest.getRoomId());
         if(!checkRoomId) {
+            log.warn("updateCreatedAtStatus Return : BAD_REQUEST, roomId's not correct");
+            log.warn("updateCreatedAtStatus : roomId = {}, status = {}", roomUpdateRequest.getRoomId(), roomUpdateRequest.getStatus());
             return HttpStatus.BAD_REQUEST;
         }
         roomService.updateRoom(roomUpdateRequest.getRoomId(), roomUpdateRequest.getStatus());
+        log.info("updateCreatedAtStatus Return : OK, update complete");
         return HttpStatus.OK;
     }
 }

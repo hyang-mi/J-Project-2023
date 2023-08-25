@@ -7,11 +7,11 @@ import java.io.Serializable;
 @Data
 
 public class RoomInMemberId implements Serializable {
-    private long member;
-    private long room;
+    private Long member;
+    private Long room;
     @Override
     public int hashCode(){
-      return super.hashCode();
+        return super.hashCode();
     }
 
     @Override

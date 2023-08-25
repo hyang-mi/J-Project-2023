@@ -13,5 +13,6 @@ public class UMailRequest {
     private String uEmail;
 
     @JsonProperty("collegeId")
+    @NotNull
     private Long collegeId;
 }

@@ -20,5 +20,6 @@ public class UNumRequest {
     private String uEmail;
 
     @JsonProperty("collegeId")
+    @NotNull
     private Long collegeId;
 }

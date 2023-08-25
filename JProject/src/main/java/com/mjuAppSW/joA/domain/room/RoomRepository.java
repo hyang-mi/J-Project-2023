@@ -8,15 +8,20 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Room r set r.date = :date, r.status = :status Where r.roomId = :roomId")
+    @Query("UPDATE Room r set r.date = :date, r.status = :status Where r.id = :roomId")
     void updateCreatedAtAndStatus(@Param("roomId") Long roomId, @Param("date") LocalDateTime date, @Param("status") String status);
 
-    @Query("SELECT r FROM Room r Where r.roomId = :roomId")
+    @Query("SELECT r FROM Room r Where r.id = :roomId")
     Room findByDate(@Param("roomId") Long roomId);
+
+    @Query("SELECT r FROM Room r Where r.status = :status")
+    List<Room> findByStatus(@Param("status") String status);
 }
+

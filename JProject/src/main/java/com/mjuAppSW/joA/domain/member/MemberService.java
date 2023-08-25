@@ -2,14 +2,13 @@ package com.mjuAppSW.joA.domain.member;
 
 import com.mjuAppSW.joA.domain.college.College;
 import com.mjuAppSW.joA.domain.college.CollegeRepository;
-import com.mjuAppSW.joA.geography.Location;
 import com.mjuAppSW.joA.domain.heart.HeartRepository;
 import com.mjuAppSW.joA.domain.member.dto.*;
 import com.mjuAppSW.joA.domain.vote.VoteRepository;
 import com.mjuAppSW.joA.geography.GeoRepository;
+import com.mjuAppSW.joA.geography.Location;
 import com.mjuAppSW.joA.storage.ExpiredManager;
 import com.mjuAppSW.joA.storage.S3Uploader;
-import jakarta.transaction.Status;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -180,7 +179,7 @@ public class MemberService {
         Member member = findByMemberId(id);
         if (member == null) return null;
 
-        String urlCode = null;
+        String urlCode = "";
         if (!member.getBasicProfile())
             urlCode = member.getUrlCode();
 
@@ -196,7 +195,7 @@ public class MemberService {
         Pageable pageable = PageRequest.of(0, 3);
         List<String> voteTop3 = voteRepository.findVoteCategoryById(member.getId(), pageable);
 
-        String urlCode = null;
+        String urlCode = "";
         if (!member.getBasicProfile())
             urlCode = member.getUrlCode();
 
@@ -231,7 +230,8 @@ public class MemberService {
         Member member = findByMemberId(request.getId());
         if (member == null) return new StatusResponse(2);
 
-        s3Uploader.deletePicture(member.getUrlCode());
+        if(!member.getBasicProfile())
+            s3Uploader.deletePicture(member.getUrlCode());
         String newUrlCode = s3Uploader.putPicture(member.getId(), request.getBase64Picture());
         member.changeUrlCode(newUrlCode);
 
@@ -248,7 +248,7 @@ public class MemberService {
         if (member == null) return false;
 
         s3Uploader.deletePicture(member.getUrlCode());
-        member.changeUrlCode(null);
+        member.changeUrlCode("");
         member.changeBasicProfileStatus(true);
         return true;
     }

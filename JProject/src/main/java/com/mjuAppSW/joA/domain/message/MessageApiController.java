@@ -24,15 +24,18 @@ public class MessageApiController {
     @GetMapping("/load/message")
     public ResponseEntity<List<MessageResponse>> loadMessage(
             @RequestParam("roomId") Long roomId, @RequestParam("memberId") Long memberId) {
-        log.info("loadMessage");
-        log.info("roomId : " + roomId);
-        log.info("memberId : " + memberId);
+        log.info("loadMessage : roomId = {}, memberId = {}", roomId, memberId);
         MessageList list = messageService.loadMessage(roomId, memberId);
         if (list.getStatus().equals("0") || list.getStatus().equals("1")) {
+            log.info("loadMessage Return : OK"); //real value or just ok?
             return ResponseEntity.ok(list.getMessageResponseList());
         } else if (list.getStatus().equals("2")) {
-            return ResponseEntity.notFound().build(); // roomInMember에 해당하는 방이 없을 때
+            log.warn("loadMessage Return : NOT_FOUND, not found roomInMember");
+            log.warn("loadMessage : roomId = {}, memberId = {}", roomId, memberId);
+            return ResponseEntity.notFound().build();
         } else {
+            log.warn("loadMessage Return : BAD_REQUEST, getValue's not correct");
+            log.warn("loadMessage : roomId = {}, memberId = {}", roomId, memberId);
             return ResponseEntity.badRequest().build();
         }
     }

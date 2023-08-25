@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,13 +41,13 @@ public class HeartService {
         heartRepository.save(heart);
         Heart opponentHeart = findEqualHeartByIdAndDate(takeId, giveId);
         String giveMemberName = giveMember.getName();
-        String giveUrlCode = null;
+        String giveUrlCode = "";
         if(!giveMember.getBasicProfile())
             giveUrlCode = giveMember.getUrlCode();
 
         if(opponentHeart != null) {
             String takeMemberName = takeMember.getName();
-            String takeUrlCode = null;
+            String takeUrlCode = "";
             if(!takeMember.getBasicProfile())
                 takeUrlCode = takeMember.getUrlCode();
             return HeartResponse.builder().status(0)

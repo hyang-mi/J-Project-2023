@@ -33,7 +33,7 @@ public class RoomInMemberService {
         this.roomRepository = roomRepository;
     }
 
-    public boolean findByRoomIdAndMemberId(Long roomId, Long memberId){
+    public Boolean findByRoomIdAndMemberId(Long roomId, Long memberId){
         Optional<Room> getRoom = roomRepository.findById(roomId);
         Optional<Member> getMember = memberRepository.findById(memberId);
         if(getRoom.isPresent() && getMember.isPresent()) {
@@ -48,7 +48,7 @@ public class RoomInMemberService {
         return false;
     }
 
-    public RoomList getRoomList(Long memberId, String expired){ // 프로필 사진도 같이
+    public RoomList getRoomList(Long memberId){
         Optional<Member> getMember = memberRepository.findById(memberId);
         if(getMember.isPresent()){
             Member member = getMember.get();
@@ -61,9 +61,9 @@ public class RoomInMemberService {
                     List<RoomInMember> list = roomInMemberRepository.findByAllRoom(rim.getRoom());
                     for(RoomInMember rim1 : list) {
                         if (rim1.getMember() != member) {
-                            RoomListResponse rlr = roomInMemberRepository.findByMemberIdAndExpired(rim1.getMember(), rim1.getRoom(), expired);
+                            RoomListResponse rlr = roomInMemberRepository.findByMemberIdAndExpired(rim1.getMember(), rim1.getRoom());
                             if(rlr != null){
-                                RoomDTO roomDTO = new RoomDTO(rlr.getRoom().getRoomId(), rlr.getName(), rlr.getUrlCode(), rlr.getContent());
+                                RoomDTO roomDTO = new RoomDTO(rlr.getRoom().getId(), rlr.getName(), rlr.getUrlCode(), rlr.getContent());
                                 roomDTOList.add(roomDTO);
                             }
                         }
@@ -75,44 +75,14 @@ public class RoomInMemberService {
         return new RoomList(null, "2");
     }
 
-
-//    public List<RoomListDTO> getRoomList(long member, char expired){
-//        Member memberObj = new Member(member);
-//        List<Room_in_member> memberList = room_in_member_repository.findByAllMember(memberObj);
-//        RoomListDTO roomListDTO = new RoomListDTO();
-//        List<RoomListDTO> roomListDTOList = new ArrayList<>();
-//        if(memberList == null || memberList.isEmpty()){
-//            return null;
-//        }else{
-//            for(Room_in_member rim : memberList){
-//                List<Room_in_member> list = room_in_member_repository.findByAllRoom(rim.getRoomId());
-//                for(Room_in_member rim1 : list) {
-//                    if (rim1.getMemberId().getId() != memberObj.getId()) {
-//                        RoomListResponse rlr = room_in_member_repository.findByMemberIdAndExpired(rim1.getMemberId().getId(), expired);
-//                        roomListDTO.setRoomId(rlr.getRoom().getRoomId());
-//                        roomListDTO.setName(rlr.getName());
-//                        roomListDTO.setImagePath(rlr.getImagePath());
-//                        roomListDTO.setContent(rlr.getContent());
-//                        roomListDTOList.add(roomListDTO);
-//                        roomListDTO = new RoomListDTO();
-//                    }
-//                }
-//            }
-//        }
-//        return roomListDTOList;
-//    }
-
     @Transactional
     public void createRoom(Long roomId, Long memberId){
-        log.info("webSocket createRoom");
-        log.info("Room : " + roomId);
-        log.info("Member : " + memberId);
         Optional<Room> getRoom = roomRepository.findById(roomId);
         Optional<Member> getMember = memberRepository.findById(memberId);
         if(getRoom.isPresent() && getMember.isPresent()){
             Room room = getRoom.get();
             Member member = getMember.get();
-            RoomInMember rim = new RoomInMember(room, member, "1", "2");
+            RoomInMember rim = new RoomInMember(room, member, "1", "1");
             roomInMemberRepository.save(rim);
         }
     }
@@ -128,14 +98,14 @@ public class RoomInMemberService {
             for(RoomInMember roomInMember : getRoomInMember){
                 if(roomInMember.getMember() != member){
                     VoteResponse voteResponse = new VoteResponse(roomInMember.getRoom(), roomInMember.getMember(), roomInMember.getResult());
-                    return new VoteDTO(voteResponse.getRoom().getRoomId(), voteResponse.getMember().getId(), voteResponse.getResult());
+                    return new VoteDTO(voteResponse.getRoom().getId(), voteResponse.getMember().getId(), voteResponse.getResult());
                 }
             }
         }
         return null;
     }
 
-    public boolean checkRoomIdAndMemberId(Long roomId, Long memberId){
+    public Boolean checkRoomIdAndMemberId(Long roomId, Long memberId){
         Optional<Room> getRoom = roomRepository.findById(roomId);
         Optional<Member> getMember = memberRepository.findById(memberId);
         if(getRoom.isPresent() && getMember.isPresent()) {
@@ -148,7 +118,27 @@ public class RoomInMemberService {
         }else{return false;}
     }
 
-    public boolean checkRoomId(Long roomId) {
+    public Boolean checkRoomInMember(Long memberId1, Long memberId2){
+        Optional<Member> getMember1 = memberRepository.findById(memberId1);
+        Optional<Member> getMember2 = memberRepository.findById(memberId2);
+        if(getMember1.isPresent() && getMember2.isPresent()){
+            Member member1 = getMember1.get();
+            Member member2 = getMember2.get();
+            List<RoomInMember> getRoomInMembers = roomInMemberRepository.checkRoomInMember(member1, member2);
+            if(getRoomInMembers.isEmpty() || getRoomInMembers == null){
+                return true;
+            }
+            for(RoomInMember rim : getRoomInMembers){
+                if(rim.getExpired().equals("0")){
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public Boolean checkRoomId(Long roomId) {
         Optional<Room> getRoom = roomRepository.findById(roomId);
         if(getRoom.isPresent()){
             Room room = getRoom.get();
@@ -167,7 +157,7 @@ public class RoomInMemberService {
             List<RoomInMember> list = roomInMemberRepository.findAllRoom(room);
             List<CheckVoteDTO> response = new ArrayList<>();
             for(RoomInMember rim : list){
-                CheckVoteDTO checkVoteDTO = new CheckVoteDTO(rim.getRoom().getRoomId(), rim.getMember().getId(), rim.getResult());
+                CheckVoteDTO checkVoteDTO = new CheckVoteDTO(rim.getRoom().getId(), rim.getMember().getId(), rim.getResult());
                 response.add(checkVoteDTO);
             }
             return response;
@@ -175,7 +165,7 @@ public class RoomInMemberService {
     }
 
     @Transactional
-    public boolean updateExpired(Long roomId, Long memberId, String expired) {
+    public Boolean updateExpired(Long roomId, Long memberId, String expired) {
         Optional<Room> getRoom = roomRepository.findById(roomId);
         Optional<Member> getMember = memberRepository.findById(memberId);
         if (getRoom.isPresent() && getMember.isPresent()) {
@@ -213,6 +203,22 @@ public class RoomInMemberService {
             LocalDateTime currentDateTime = LocalDateTime.now();
             roomInMemberRepository.updateExitTime(room, member, currentDateTime);
             return true;
+        }
+        return false;
+    }
+
+    public Boolean checkExpired(Long roomId, Long memberId){
+        Optional<Room> getRoom = roomRepository.findById(roomId);
+        Optional<Member> getMember = memberRepository.findById(memberId);
+        if (getRoom.isPresent() && getMember.isPresent()) {
+            Room room = getRoom.get();
+            Member member = getMember.get();
+            RoomInMember getRim = roomInMemberRepository.checkExpired(room, member);
+            if(getRim.getExpired().equals("1")){
+                return true;
+            }else{
+                return false;
+            }
         }
         return false;
     }

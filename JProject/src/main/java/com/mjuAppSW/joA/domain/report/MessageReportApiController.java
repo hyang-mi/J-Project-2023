@@ -21,14 +21,14 @@ public class MessageReportApiController {
 
     @PostMapping("/report/message")
     public HttpStatus messageReport(@RequestBody ReportRequest request){
-        log.info("messageReport");
-        log.info("messageId : " + request.getMessageId());
-        log.info("categoryId : " + request.getCategoryId());
-        log.info("content : " + request.getContent());
-        boolean save = messageReportService.messageReport(request.getMessageId(), request.getCategoryId(), request.getContent());
+        log.info("messageReport : messageId = {}, categoryId = {}, content = {}", request.getMessageId(), request.getCategoryId(), request.getContent());
+        Boolean save = messageReportService.messageReport(request.getMessageId(), request.getCategoryId(), request.getContent());
         if(save){
+            log.info("messageReport Return : OK, success to report");
             return HttpStatus.OK;
         }
-        return HttpStatus.BAD_REQUEST; // messageId or CategoryId is wrong
+        log.warn("messageReport Return : BAD_REQUEST, getValue's not correct");
+        log.warn("messageReport : messageId = {}, categoryId = {}", request.getMessageId(), request.getCategoryId());
+        return HttpStatus.BAD_REQUEST;
     }
 }

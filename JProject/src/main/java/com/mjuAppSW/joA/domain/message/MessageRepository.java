@@ -24,9 +24,4 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Transactional
     @Query("UPDATE Message m SET m.isChecked = '0' WHERE m In :messages")
     void updateIsChecked(@Param("messages") List<Message> messages);
-
-//    @Modifying
-//    @Transactional
-//    @Query("UPDATE Message m set m.isChecked = :isChecked Where m.room = :room AND m.member = :member")
-//    void updateIsChecked(@Param("room") Room room, @Param("member") Member member, @Param("isChecked") String isChecked);
 }

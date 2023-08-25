@@ -59,10 +59,11 @@ public class Member {
         this.college = college;
         this.basicProfile = true;
         this.withdrawal = false;
+        this.bio = "";
+        this.urlCode = "";
     }
 
-    public void changeName(String name) {
-        this.name = name;}
+    public void changeName(String name) { this.name = name; }
 
     public void changeUrlCode(String urlCode) {
         this.urlCode = urlCode;

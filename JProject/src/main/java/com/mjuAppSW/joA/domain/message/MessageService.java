@@ -33,7 +33,7 @@ public class MessageService {
         this.roomInMemberRepository = roomInMemberRepository;
     }
 
-    public boolean saveMessage(Long roomId, Long memberId, String content, String isChecked){
+    public Boolean saveMessage(Long roomId, Long memberId, String content, String isChecked){
         Optional<Room> getRoom = roomRepository.findById(roomId);
         Optional<Member> getMember = memberRepository.findById(memberId);
         if(getRoom.isPresent() && getMember.isPresent()){
@@ -41,19 +41,6 @@ public class MessageService {
             Member member = getMember.get();
             Message message = new Message(member, room, content, new Date(), isChecked);
             messageRepository.save(message);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean checkRoom(Long roomId){
-        Optional<Room> getRoom = roomRepository.findById(roomId);
-        if(getRoom.isPresent()){
-            Room room = getRoom.get();
-            List<Message> messageList = messageRepository.findByRoom(room);
-            if(messageList == null || messageList.isEmpty()){
-                return false;
-            }
             return true;
         }
         return false;
@@ -67,11 +54,11 @@ public class MessageService {
             Member member = getMember.get();
             Optional<RoomInMember> getRoomInMember = Optional.ofNullable(roomInMemberRepository.findByRoomAndMember(room, member));
             if(getRoomInMember.isEmpty()){
-                return new MessageList(null, "2");
+                return new MessageList(new ArrayList<>(), "2");
             }
             List<Message> messageList = messageRepository.findByRoom(room);
             if(messageList.isEmpty() || messageList == null){
-                return new MessageList(null, "1");
+                return new MessageList(new ArrayList<>(), "1");
             }
             List<MessageResponse> messageResponseList = new ArrayList<>();
             for(Message message : messageList){
@@ -86,7 +73,7 @@ public class MessageService {
             }
             return new MessageList(messageResponseList, "0");
         }
-        return new MessageList(null, "3");
+        return new MessageList(new ArrayList<>(), "3");
     }
 
     public Boolean updateIsChecked(String roomId, String memberId){
@@ -97,7 +84,6 @@ public class MessageService {
             Member member = getMember.get();
             List<Message> getMessages = messageRepository.findMessage(room, member);
             if(getMessages.isEmpty() || getMessages == null){
-                System.out.println("is Empty");
                 return true;
             }
             messageRepository.updateIsChecked(getMessages);

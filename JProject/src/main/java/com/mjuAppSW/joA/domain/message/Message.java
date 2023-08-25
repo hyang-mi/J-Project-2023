@@ -16,15 +16,15 @@ import java.util.Date;
 @Table(name = "Message")
 public class Message {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
-    public Long message_Id;
+    @Column(name ="Message_id", nullable = false)
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name="memberId")
+    @JoinColumn(name="Member_id", nullable = false)
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name="roomId")
+    @JoinColumn(name="Room_id", nullable = false)
     private Room room;
 
     @Column(nullable = false)
@@ -37,8 +37,8 @@ public class Message {
     @Column(nullable = false)
     private String isChecked;
 
-    public Message(long messageId){
-        this.message_Id = messageId;
+    public Message(long id){
+        this.id = id;
     }
 
     public Message(Member member, Room room, String content, Date date, String isChecked) {

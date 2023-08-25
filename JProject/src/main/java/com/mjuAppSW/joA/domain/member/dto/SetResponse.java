@@ -1,6 +1,5 @@
 package com.mjuAppSW.joA.domain.member.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

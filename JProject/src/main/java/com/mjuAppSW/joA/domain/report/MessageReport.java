@@ -15,15 +15,16 @@ import java.util.Date;
 @Table(name="Message_report")
 public class MessageReport {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(nullable = false)
-    private Long report_Id;
+    @Column(name="MReport_id", nullable = false)
+    private Long id;
 
     @OneToOne
-    @PrimaryKeyJoinColumn
+    @JoinColumn(name = "Message_Id", nullable = false)
+//    @PrimaryKeyJoinColumn
     private Message message_id;
 
     @ManyToOne
-    @JoinColumn(name="category_id", nullable = false)
+    @JoinColumn(name="Category_id", nullable = false)
     private ReportCategory category_id;
 
     private String content;

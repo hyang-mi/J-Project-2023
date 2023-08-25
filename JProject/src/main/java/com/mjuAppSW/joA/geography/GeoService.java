@@ -1,8 +1,10 @@
 package com.mjuAppSW.joA.geography;
 
-import com.mjuAppSW.joA.geography.dto.*;
+import com.mjuAppSW.joA.domain.heart.Heart;
+import com.mjuAppSW.joA.domain.heart.HeartRepository;
 import com.mjuAppSW.joA.domain.member.Member;
 import com.mjuAppSW.joA.domain.member.MemberRepository;
+import com.mjuAppSW.joA.geography.dto.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +12,9 @@ import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
-
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class GeoService {
 
     private final GeoRepository geoRepository;
     private final MemberRepository memberRepository;
+    private final HeartRepository heartRepository;
 
     @Transactional
     public StatusResponse updateLocation(UpdateRequest request) {
@@ -46,13 +49,21 @@ public class GeoService {
 
         for (Long nearId : nearIds) {
             Member findMember = findByMemberId(nearId);
-            String urlCode = null;
+            Heart findEqualHeart = heartRepository.findEqualHeartByIdAndDate(
+                                                LocalDate.now(), request.getId(), nearId).orElse(null);
+
+            String urlCode = "";
+            Boolean isLiked = false;
+
             if(!findMember.getBasicProfile())
                 urlCode = findMember.getUrlCode();
+            if(findEqualHeart != null)
+                isLiked = true;
 
             nearByInfoList.add(NearByInfo.builder().name(findMember.getName())
                                                 .urlCode(urlCode)
-                                                .bio(findMember.getBio()).build());
+                                                .bio(findMember.getBio())
+                                                .isLiked(isLiked).build());
         }
         return new NearByListResponse(nearByInfoList);
     }

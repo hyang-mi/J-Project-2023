@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
 public class RoomInMember {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="id")
+    @JoinColumn(name="Member_id", nullable = false)
     private Member member;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="roomId")
+    @JoinColumn(name="Room_id", nullable = false)
     private Room room;
 
     @Column(nullable = false)
@@ -33,9 +33,11 @@ public class RoomInMember {
     private String result;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="Entry_time")
     private LocalDateTime entryTime;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name="Exit_time")
     private LocalDateTime exitTime;
 
     public RoomInMember(Room room, Member member, String expired, String result) {

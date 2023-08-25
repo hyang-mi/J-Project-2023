@@ -9,4 +9,5 @@ public class NearByInfo {
     private String name;
     private String urlCode;
     private String bio;
+    private Boolean isLiked;
 }
