@@ -3,6 +3,7 @@ package com.mjuAppSW.joA.domain.roomInMember;
 import com.mjuAppSW.joA.domain.member.Member;
 import com.mjuAppSW.joA.domain.room.Room;
 import com.mjuAppSW.joA.domain.roomInMember.dto.RoomListResponse;
+import com.mjuAppSW.joA.domain.roomInMember.dto.UserInfoResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -30,26 +31,20 @@ public interface RoomInMemberRepository extends JpaRepository<RoomInMember, Long
     List<RoomInMember> findByAllRoom(@Param("room") Room room);
 
     @Query("SELECT rm FROM RoomInMember rm " +
-            "WHERE rm.room.id IN (" +
-            "    SELECT r.id FROM Room r " +
-            "    WHERE r.id IN (" +
-            "        SELECT rm1.room.id FROM RoomInMember rm1 WHERE rm1.member = :member1" +
-            "    ) AND r.id IN (" +
-            "        SELECT rm2.room.id FROM RoomInMember rm2 WHERE rm2.member = :member2" +
-            "    )" +
-            ")")
+            "WHERE rm.room.id IN (SELECT r.id FROM Room r " +
+            "WHERE r.id IN (SELECT rm1.room.id FROM RoomInMember rm1 WHERE rm1.member = :member1) " +
+            "AND r.id IN (SELECT rm2.room.id FROM RoomInMember rm2 WHERE rm2.member = :member2))")
     List<RoomInMember> checkRoomInMember(@Param("member1") Member member1, @Param("member2") Member member2);
 
     @Query("SELECT rim.room AS room, m.name AS name, m.urlCode AS urlCode, mes.content AS content " +
             "FROM RoomInMember rim " +
             "LEFT JOIN Member m ON rim.member.id = m.id " +
             "LEFT JOIN Room r ON rim.room.id = r.id " +
-            "LEFT JOIN Message mes ON rim.member = mes.member " +
+            "LEFT JOIN Message mes ON rim.member = mes.member AND rim.room = mes.room " +
             "WHERE rim.member = :member AND rim.room = :room " +
-            "AND (mes.content IS NULL OR mes.content IS NOT NULL OR NOT EXISTS (SELECT 1 FROM Message mes2 WHERE mes2.member = rim.member)) " +
-            "AND (mes.time IS NULL OR mes.time = (SELECT MAX(mes2.time) FROM Message mes2 WHERE mes2.member = rim.member))" )
-    RoomListResponse findByMemberIdAndExpired(@Param("member") Member member,
-                                              @Param("room") Room room);
+            "AND (mes.content IS NULL OR mes.content IS NOT NULL) " +
+            "AND (mes.time IS NULL OR mes.time = (SELECT MAX(mes2.time) FROM Message mes2 WHERE mes2.member = :member AND mes2.room = :room))")
+    RoomListResponse findRoomValue(@Param("member") Member member, @Param("room") Room room);
 
 
     @Modifying
@@ -62,6 +57,11 @@ public interface RoomInMemberRepository extends JpaRepository<RoomInMember, Long
 
     @Query("SELECT rim FROM RoomInMember rim Where rim.room = :room AND rim.member <> :member")
     RoomInMember checkExpired(@Param("room") Room room, @Param("member") Member member);
+
+    @Query("SELECT m.name AS name, m.urlCode AS urlCode, m.bio AS bio " +
+            "From RoomInMember rim LEFT JOIN Member m ON rim.member.id = m.id " +
+            "WHERE rim.room = :room AND rim.member <> :member")
+    UserInfoResponse getUserInfo(@Param("room") Room room, @Param("member") Member member);
 
     @Modifying
     @Transactional

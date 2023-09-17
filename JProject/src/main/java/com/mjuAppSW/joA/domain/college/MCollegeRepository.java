@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface CollegeRepository extends JpaRepository<College, Long> {
+public interface MCollegeRepository extends JpaRepository<MCollege, Long> {
 
-    Optional<College> findBydomain(String domain);
+    Optional<MCollege> findBydomain(String domain);
 }

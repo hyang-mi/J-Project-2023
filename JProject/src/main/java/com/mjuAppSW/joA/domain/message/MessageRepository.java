@@ -20,6 +20,15 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     @Query("SELECT m FROM Message m WHERE m.room = :room AND m.isChecked = '1' AND m.member <> :member")
     List<Message> findMessage(@Param("room") Room room, @Param("member") Member member);
 
+
+    @Query("SELECT COUNT(m) FROM Message m WHERE m.room = :room AND m.member = :member AND m.isChecked = '1'")
+    Integer countUnCheckedMessage(@Param("room") Room room, @Param("member") Member member);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Message m WHERE m.room = :room")
+    void deleteByRoom(@Param("room") Room room);
+
     @Modifying
     @Transactional
     @Query("UPDATE Message m SET m.isChecked = '0' WHERE m In :messages")

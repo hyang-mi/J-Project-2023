@@ -1,4 +1,4 @@
-package com.mjuAppSW.joA.geography.dto;
+package com.mjuAppSW.joA.geography.location.dto;
 
 import lombok.Builder;
 import lombok.Getter;

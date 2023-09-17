@@ -2,6 +2,7 @@ package com.mjuAppSW.joA.domain.roomInMember;
 
 import com.mjuAppSW.joA.domain.member.Member;
 import com.mjuAppSW.joA.domain.member.MemberRepository;
+import com.mjuAppSW.joA.domain.message.MessageRepository;
 import com.mjuAppSW.joA.domain.room.Room;
 import com.mjuAppSW.joA.domain.room.RoomRepository;
 import com.mjuAppSW.joA.domain.room.RoomService;
@@ -23,14 +24,17 @@ public class RoomInMemberService {
     private RoomService roomService;
     private RoomRepository roomRepository;
     private MemberRepository memberRepository;
+    private MessageRepository messageRepository;
 
     @Autowired
     public RoomInMemberService(RoomInMemberRepository roomInMemberRepository, RoomService roomService,
-                               MemberRepository memberRepository, RoomRepository roomRepository){
+                               MemberRepository memberRepository, RoomRepository roomRepository,
+                               MessageRepository messageRepository){
         this.roomInMemberRepository = roomInMemberRepository;
         this.roomService = roomService;
         this.memberRepository = memberRepository;
         this.roomRepository = roomRepository;
+        this.messageRepository = messageRepository;
     }
 
     public Boolean findByRoomIdAndMemberId(Long roomId, Long memberId){
@@ -48,6 +52,23 @@ public class RoomInMemberService {
         return false;
     }
 
+    public Boolean findByRoom(Long roomId){
+        Optional<Room> getRoom = roomRepository.findById(roomId);
+        if(getRoom.isPresent()){
+            Room room = getRoom.get();
+            List<RoomInMember> roomInMemberList = roomInMemberRepository.findAllRoom(room);
+            if(roomInMemberList.isEmpty() || roomInMemberList == null){
+                return true;
+            }
+            for(RoomInMember roomInMember : roomInMemberList){
+                if(roomInMember.getExpired().equals("0")){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public RoomList getRoomList(Long memberId){
         Optional<Member> getMember = memberRepository.findById(memberId);
         if(getMember.isPresent()){
@@ -61,9 +82,10 @@ public class RoomInMemberService {
                     List<RoomInMember> list = roomInMemberRepository.findByAllRoom(rim.getRoom());
                     for(RoomInMember rim1 : list) {
                         if (rim1.getMember() != member) {
-                            RoomListResponse rlr = roomInMemberRepository.findByMemberIdAndExpired(rim1.getMember(), rim1.getRoom());
+                            RoomListResponse rlr = roomInMemberRepository.findRoomValue(rim1.getMember(), rim1.getRoom());
+                            Integer unCheckedMessage = messageRepository.countUnCheckedMessage(rim1.getRoom(), rim1.getMember());
                             if(rlr != null){
-                                RoomDTO roomDTO = new RoomDTO(rlr.getRoom().getId(), rlr.getName(), rlr.getUrlCode(), rlr.getContent());
+                                RoomDTO roomDTO = new RoomDTO(rlr.getRoom().getId(), rlr.getName(), rlr.getUrlCode(), rlr.getContent(), String.valueOf(unCheckedMessage));
                                 roomDTOList.add(roomDTO);
                             }
                         }
@@ -73,6 +95,20 @@ public class RoomInMemberService {
             return new RoomList(roomDTOList, "0");
         }
         return new RoomList(null, "2");
+    }
+
+    public RoomDTO getUpdateRoom(Room room, Member member){
+        Optional<RoomInMember> roomInMember = Optional.ofNullable(roomInMemberRepository.findByRoomAndMember(room, member));
+        if(roomInMember.isPresent()){
+            RoomInMember rim = roomInMember.get();
+            RoomListResponse rlr = roomInMemberRepository.findRoomValue(rim.getMember(), rim.getRoom());
+            Integer unCheckedMessage = messageRepository.countUnCheckedMessage(rim.getRoom(), rim.getMember());
+            if(rlr != null){
+                RoomDTO roomDTO = new RoomDTO(rlr.getRoom().getId(), rlr.getName(), rlr.getUrlCode(), rlr.getContent(), String.valueOf(unCheckedMessage));
+                return roomDTO;
+            }
+        }
+        return null;
     }
 
     @Transactional
@@ -162,6 +198,24 @@ public class RoomInMemberService {
             }
             return response;
         }else{return new ArrayList<>();}
+    }
+
+    public UserInfoDTO getUserInfo(Long roomId, Long memberId){
+        Optional<Room> getRoom = roomRepository.findById(roomId);
+        Optional<Member> getMember = memberRepository.findById(memberId);
+        if(getRoom.isEmpty() || getMember.isEmpty()){
+            return new UserInfoDTO(null, null, null) ;
+        }else if(getRoom.isPresent() && getMember.isPresent()){
+            Room room = getRoom.get();
+            Member member = getMember.get();
+            Optional<RoomInMember> getRoomInMember = Optional.ofNullable(roomInMemberRepository.findByRoomAndMember(room, member));
+            if(getRoomInMember.isPresent()){
+                UserInfoResponse uir = roomInMemberRepository.getUserInfo(room, member);
+                return new UserInfoDTO(uir.getName(), uir.getUrlCode(), uir.getBio());
+            }
+            return new UserInfoDTO(null, null, null) ;
+        }
+        return new UserInfoDTO(null, null, null) ;
     }
 
     @Transactional

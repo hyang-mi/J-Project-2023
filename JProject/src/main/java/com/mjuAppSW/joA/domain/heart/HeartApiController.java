@@ -20,13 +20,9 @@ public class HeartApiController {
 
     @PostMapping("heart/send")
     public ResponseEntity<HeartResponse> sendHeart(@RequestBody @Valid HeartRequest request) {
-        log.info("request api send heart");
-        log.info("giveId = {}, takeId = {}, named = {}", request.getGiveId(), request.getTakeId(), request.getNamed());
+        log.info("sendHeart : giveId = {}, takeId = {}, named = {}", request.getGiveId(), request.getTakeId(), request.getNamed());
         HeartResponse response = heartService.sendHeart(request);
-        Integer result = response.getStatus();
-        if (result == 0)
-            return ResponseEntity.ok(response);
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        log.info("sendHeart Return : OK, status = {}, isMatched = {}, giveName = {}, takeName = {}, giveUrlCode= {}, takeUrlCode = {}", response.getStatus(), response.getIsMatched(), response.getGiveName(), response.getTakeName(), response.getGiveUrlCode(), response.getTakeUrlCode());
+        return ResponseEntity.ok(response);
     }
 }

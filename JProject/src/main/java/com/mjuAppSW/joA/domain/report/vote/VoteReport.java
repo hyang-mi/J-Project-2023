@@ -1,5 +1,6 @@
-package com.mjuAppSW.joA.domain.report;
+package com.mjuAppSW.joA.domain.report.vote;
 
+import com.mjuAppSW.joA.domain.report.ReportCategory;
 import com.mjuAppSW.joA.domain.vote.Vote;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

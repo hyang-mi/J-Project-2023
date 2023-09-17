@@ -1,12 +1,14 @@
 package com.mjuAppSW.joA.domain.member;
 
-import com.mjuAppSW.joA.domain.college.College;
-import com.mjuAppSW.joA.domain.college.CollegeRepository;
+import com.mjuAppSW.joA.domain.college.MCollege;
+import com.mjuAppSW.joA.domain.college.MCollegeRepository;
 import com.mjuAppSW.joA.domain.heart.HeartRepository;
 import com.mjuAppSW.joA.domain.member.dto.*;
 import com.mjuAppSW.joA.domain.vote.VoteRepository;
-import com.mjuAppSW.joA.geography.GeoRepository;
-import com.mjuAppSW.joA.geography.Location;
+import com.mjuAppSW.joA.geography.college.PCollege;
+import com.mjuAppSW.joA.geography.college.PCollegeRepository;
+import com.mjuAppSW.joA.geography.location.LocationRepository;
+import com.mjuAppSW.joA.geography.location.Location;
 import com.mjuAppSW.joA.storage.ExpiredManager;
 import com.mjuAppSW.joA.storage.S3Uploader;
 import jakarta.transaction.Transactional;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -32,14 +35,15 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final HeartRepository heartRepository;
     private final VoteRepository voteRepository;
-    private final GeoRepository geoRepository;
-    private final CollegeRepository collegeRepository;
+    private final LocationRepository geoRepository;
+    private final MCollegeRepository mCollegeRepository;
+    private final PCollegeRepository pCollegeRepository;
     private final JavaMailSender javaMailSender;
     private final ExpiredManager expiredManager;
     private final S3Uploader s3Uploader;
 
     public UMailResponse sendCertifyNum(UMailRequest request) {
-        College college = findByCollegeId(request.getCollegeId());
+        MCollege college = findByCollegeId(request.getCollegeId());
         if (college == null) return new UMailResponse(3); // 학교가 존재하지 않음
 
         Member findMember = findByUEmailAndCollege(request.getUEmail(), college);
@@ -60,7 +64,7 @@ public class MemberService {
     }
 
     public StatusResponse authCertifyNum(UNumRequest request) {
-        College college = findByCollegeId(request.getCollegeId());
+        MCollege college = findByCollegeId(request.getCollegeId());
         if (college == null) return new StatusResponse(3); // 학교가 존재하지 않음
         Long memberId = request.getId();
         String webMail = request.getUEmail() + college.getDomain();
@@ -82,6 +86,7 @@ public class MemberService {
         if (!expiredManager.isExistedKey("U" + id)) {
             return new StatusResponse(3);
         }
+
         Member findMember = findByLoginId(loginId);
         if (findMember == null) {
             if(!expiredManager.isExistedValue("I", loginId)) {
@@ -105,7 +110,7 @@ public class MemberService {
         if(!expiredManager.isExistedKey("U" + memberId))
             return new StatusResponse(1);
 
-        if(!expiredManager.isExistedKey("I" + memberId))
+        if(!expiredManager.isExistedKey("I" + memberId) || !expiredManager.compare("I" + memberId, request.getLoginId()))
             return new StatusResponse(2);
 
         String loginId = expiredManager.getSavedValue("I" + memberId);
@@ -113,7 +118,7 @@ public class MemberService {
         String savedMailAddress = expiredManager.getSavedValue("U" + memberId);
         String[] split = savedMailAddress.split("@");
         String uEmail = split[0];
-        College college = collegeRepository.findBydomain("@" + split[1]).orElse(null);
+        MCollege college = mCollegeRepository.findBydomain("@" + split[1]).orElse(null);
 
         Member newMember = Member.builder().id(memberId)
                 .name(request.getName())
@@ -121,7 +126,11 @@ public class MemberService {
                 .password(request.getPassword())
                 .uEmail(uEmail)
                 .college(college).build();
-        Location newLocation = new Location(memberId, college.getId());
+
+
+        PCollege pCollege = pCollegeRepository.findById(college.getId()).orElse(null);
+        if(pCollege == null) return new StatusResponse(3);
+        Location newLocation = new Location(memberId, pCollege);
 
         memberRepository.save(newMember);
         geoRepository.save(newLocation);
@@ -142,7 +151,7 @@ public class MemberService {
     }
 
     public StatusResponse findId(FindIdRequest request) {
-        College college = findByCollegeId(request.getCollegeId());
+        MCollege college = findByCollegeId(request.getCollegeId());
         if (college == null) return new StatusResponse(1); // 학교 존재 X
 
         Member member = findByUEmailAndCollege(request.getUEmail(), college);
@@ -155,7 +164,7 @@ public class MemberService {
     @Transactional
     public StatusResponse findPassword(FindPasswordRequest request) {
         Member member = findByLoginId(request.getLoginId());
-        if (member == null) return new StatusResponse(1); // 사용자 존재 X
+        if (member == null) return null; // 사용자 존재 X
 
         String random = randomPassword();
         mail("임시 비밀번호", member.getName(), member.getUEmail(), member.getCollege().getDomain(), random);
@@ -312,23 +321,23 @@ public class MemberService {
 
     private Member findByMemberId(Long id) {
         Member member = memberRepository.findById(id).orElse(null);
-        if (member != null && member.getWithdrawal() == true) return null;
+        if (member.getWithdrawal() == true) return null;
         return member;
     }
 
-    private Member findByUEmailAndCollege(String uEmail, College college) {
+    private Member findByUEmailAndCollege(String uEmail, MCollege college) {
         Member member = memberRepository.findByuEmailAndcollege(uEmail, college).orElse(null);
-        if (member != null && member.getWithdrawal() == true) return null;
+        if (member.getWithdrawal() == true) return null;
         return member;
     }
 
     private Member findByLoginId(String loginId) {
         Member member = memberRepository.findByloginId(loginId).orElse(null);
-        if (member != null && member.getWithdrawal() == true) return null;
+        if (member.getWithdrawal() == true) return null;
         return member;
     }
 
-    private College findByCollegeId(Long collegeId) {
-        return collegeRepository.findById(collegeId).orElse(null);
+    private MCollege findByCollegeId(Long collegeId) {
+        return mCollegeRepository.findById(collegeId).orElse(null);
     }
 }

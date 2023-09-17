@@ -1,4 +1,4 @@
-package com.mjuAppSW.joA.domain.report;
+package com.mjuAppSW.joA.domain.report.vote;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

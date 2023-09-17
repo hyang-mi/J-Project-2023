@@ -11,6 +11,10 @@ public class JoinRequest {
     @NotNull
     private Long id;
 
+    @JsonProperty("loginId")
+    @NotBlank
+    private String loginId;
+
     @JsonProperty("name")
     @NotBlank
     private String name;

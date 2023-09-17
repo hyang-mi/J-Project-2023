@@ -17,157 +17,147 @@ public class MemberApiController {
 
     @PostMapping("/mail/send")
     public ResponseEntity<UMailResponse> sendCertifyNum(@RequestBody @Valid UMailRequest request) {
-        log.info("메일 전송 api 요청");
-        log.info("collegeId = {}, email = {} ", request.getCollegeId(), request.getUEmail());
-
+        log.info("sendCertifyNum : collegeId = {}, email = {}", request.getCollegeId(), request.getUEmail());
         UMailResponse response = memberService.sendCertifyNum(request);
-        if (response.getStatus() == 0)
-            return ResponseEntity.ok(response);
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        log.info("sendCertifyNum Return : OK, status = {}, id = {}", response.getStatus(), response.getId());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/mail/auth")
     public ResponseEntity<StatusResponse> authCertifyNum(@RequestBody @Valid UNumRequest request) {
-        log.info("메일 인증 api 요청");
-        log.info("id = {}, certifyNum = {} ", request.getId(), request.getCertifyNum());
-
+        log.info("authCertifyNum : id = {}, certifyNum = {}, uEmail = {}, collegeId = {}", request.getId(), request.getCertifyNum(), request.getUEmail(), request.getCollegeId());
         StatusResponse response = memberService.authCertifyNum(request);
-        return returnStatusResponse(response);
+        log.info("authCertifyNum Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/join/verify/id")
     public ResponseEntity<StatusResponse> verifyId(@RequestParam Long id, @RequestParam String loginId) {
-        log.info("id 중복 검증 api 요청");
-        log.info("login id = {}", loginId);
-
+        log.info("verifyId : id = {}, login id = {}", id, loginId);
         StatusResponse response = memberService.verifyId(id, loginId);
-        return returnStatusResponse(response);
+        log.info("verifyId Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/join")
     public ResponseEntity<StatusResponse> join(@RequestBody @Valid JoinRequest request) {
-        log.info("회원가입 api 요청");
-        log.info("name = {}", request.getName());
-
+        log.info("join : id = {}, name = {}, loginId = {}, password ={}", request.getId(), request.getName(), request.getLoginId(), request.getPassword());
         StatusResponse response = memberService.join(request);
-        return returnStatusResponse(response);
+        log.info("join Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
-        log.info("로그인 api 요청");
-        log.info("id = {}, password = {}", request.getLoginId(), request.getPassword());
-
+        log.info("login : id = {}, password = {}", request.getLoginId(), request.getPassword());
         LoginResponse response = memberService.login(request);
-        if(response.getStatus() == 0)
-            return ResponseEntity.ok(response);
-        else
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        log.info("login Return : OK, status = {}, id = {}", response.getStatus(), response.getId());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login/find/id")
     public ResponseEntity<StatusResponse> findId(@RequestBody @Valid FindIdRequest request) {
-        log.info("아이디 찾기 api 요청");
-        log.info("college Id = {}, uEmail = {}", request.getCollegeId(), request.getUEmail());
-
+        log.info("findId : college Id = {}, uEmail = {}", request.getCollegeId(), request.getUEmail());
         StatusResponse response = memberService.findId(request);
-        return returnStatusResponse(response);
+        log.info("findId Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login/find/password")
     public ResponseEntity<StatusResponse> findPassword(@RequestBody @Valid FindPasswordRequest request) {
-        log.info("비밀번호 찾기 api 요청");
-        log.info("Login Id = {}", request.getLoginId());
-
+        log.info("findPassword : Login Id = {}", request.getLoginId());
         StatusResponse response = memberService.findPassword(request);
-        return returnStatusResponse(response);
+        log.info("findPassword Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login/password")
     public ResponseEntity<StatusResponse> transPassword(@RequestBody @Valid TransPasswordRequest request) {
-        log.info("비밀번호 변경 api 요청");
-        log.info("id = {}, current password = {}, new password = {}", request.getId(), request.getCurrentPassword(), request.getNewPassword());
-
+        log.info("transPassword : id = {}, current password = {}, new password = {}", request.getId(), request.getCurrentPassword(), request.getNewPassword());
         StatusResponse response = memberService.transPassword(request);
-        return returnStatusResponse(response);
+        log.info("transPassword Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping ("/set")
     public ResponseEntity<SetResponse> set(@RequestParam Long id) {
-        log.info("설정 api 요청");
-        log.info("id = {}", id);
-
+        log.info("set : id = {}", id);
         SetResponse response = memberService.set(id);
-        if (response != null)
+        if (response != null) {
+            log.info("set Return : OK, name = {}, urlCode = {}", response.getName(), response.getUrlCode());
             return ResponseEntity.ok(response);
+        }
+        log.warn("set Return : BAD_REQUEST, member id is not valid");
         return ResponseEntity.badRequest().build();
     }
 
     @GetMapping("/set/myPage")
     public ResponseEntity<MyPageResponse> sendMyPage(@RequestParam Long id) {
-        log.info("마이페이지 api 요청");
-        log.info("id = {}", id);
-
+        log.info("sendMyPage : id = {}", id);
         MyPageResponse response = memberService.sendMyPage(id);
         if (response != null) {
+            log.info("sendMyPage Return : OK, name = {}, urlCode = {}, bio = {}, todayHeart = {}, totalHeart = {}, voteTop3 size = {}", response.getName(), response.getUrlCode(), response.getBio(), response.getTodayHeart(), response.getTotalHeart(), response.getVoteTop3().size());
             return ResponseEntity.ok(response);
         }
+        log.warn("sendMyPage Return : BAD_REQUEST, member id is not valid");
         return ResponseEntity.badRequest().build();
     }
 
     @PostMapping("/set/myPage/name")
     public ResponseEntity<StatusResponse> transName(@RequestBody @Valid NameRequest request) {
-        log.info("이름 변경 api 요청");
-        log.info("id = {}, name = {}", request.getId(), request.getName());
-
+        log.info("transName : id = {}, name = {}", request.getId(), request.getName());
         StatusResponse response = memberService.transName(request);
-        return returnStatusResponse(response);
+        log.info("transName Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/set/myPage/bio")
     public HttpStatus transBio(@RequestBody @Valid BioRequest request) {
-        log.info("한 줄 소개 변경 api 요청");
-        log.info("id = {}, bio = {}", request.getId(), request.getBio());
-
+        log.info("transBio : id = {}, bio = {}", request.getId(), request.getBio());
         boolean result = memberService.transBio(request);
-        return returnHttpStatus(result);
+        if (result) {
+            log.info("transBio Return : OK");
+            return HttpStatus.OK;
+        }
+        log.warn("transBio Return : BAD_REQUEST, member id is not valid");
+        return HttpStatus.BAD_REQUEST;
     }
 
     @PostMapping("/set/myPage/picture")
     public ResponseEntity<StatusResponse> transPicture(@RequestBody @Valid PictureRequest request) {
-        log.info("프로필 사진 변경 api 요청");
-        log.info("id = {}, base64Image is null = {}", request.getId(), request.getBase64Picture().isEmpty());
-
+        log.info("transPicture : id = {}, base64Image is null = {}", request.getId(), request.getBase64Picture().isEmpty());
         StatusResponse response = memberService.transPicture(request);
-        return returnStatusResponse(response);
+        log.info("transPicture Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/set/myPage/picture/delete")
     public HttpStatus deletePicture(@RequestBody @Valid MemberIdRequest request) {
-        log.info("프로필 사진 삭제 api 요청");
-        log.info("id = {}", request.getId());
-
+        log.info("deletePicture : id = {}", request.getId());
         boolean result = memberService.deletePicture(request);
-        return returnHttpStatus(result);
+        if (result) {
+            log.info("deletePicture Return : OK");
+            return HttpStatus.OK;
+        }
+        log.warn("deletePicture Return : BAD_REQUEST, member id is not valid");
+        return HttpStatus.BAD_REQUEST;
     }
 
     @PostMapping("/set/withdrawal")
     public ResponseEntity<StatusResponse> withdrawal(@RequestBody @Valid MemberIdRequest request) {
-        log.info("회원 탈퇴 api 요청");
-        log.info("id = {}", request.getId());
-
+        log.info("withdrawal : id = {}", request.getId());
         StatusResponse response = memberService.withdrawal(request);
-        return returnStatusResponse(response);
+        log.info("withdrawal Return : OK, status = {}", response.getStatus());
+        return ResponseEntity.ok(response);
     }
 
-    private HttpStatus returnHttpStatus(boolean result) {
-        if (result) return HttpStatus.OK;
-        return HttpStatus.BAD_REQUEST;
-    }
+//    private HttpStatus returnHttpStatus(boolean result) {
+//        if (result) return HttpStatus.OK;
+//        return HttpStatus.BAD_REQUEST;
+//    }
 
-    private ResponseEntity<StatusResponse> returnStatusResponse(StatusResponse response) {
-        if (response.getStatus() == 0) return ResponseEntity.ok(response);
-        return ResponseEntity.badRequest().body(response);
-    }
+//    private ResponseEntity<StatusResponse> returnStatusResponse(StatusResponse response) {
+//        if (response.getStatus() == 0) return ResponseEntity.ok(response);
+//        return ResponseEntity.badRequest().body(response);
+//    }
 }

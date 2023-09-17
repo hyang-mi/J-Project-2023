@@ -1,5 +1,6 @@
 package com.mjuAppSW.joA.domain.room;
 
+import com.mjuAppSW.joA.domain.message.MessageRepository;
 import com.mjuAppSW.joA.domain.room.dto.RoomResponse;
 import com.mjuAppSW.joA.domain.roomInMember.RoomInMemberRepository;
 import jakarta.transaction.Transactional;
@@ -19,11 +20,13 @@ public class RoomService {
 
     private RoomRepository roomRepository;
     private RoomInMemberRepository roomInMemberRepository;
+    private MessageRepository messageRepository;
 
     @Autowired
-    public RoomService(RoomRepository roomRepository, RoomInMemberRepository roomInMemberRepository){
+    public RoomService(RoomRepository roomRepository, RoomInMemberRepository roomInMemberRepository, MessageRepository messageRepository){
         this.roomRepository = roomRepository;
         this.roomInMemberRepository = roomInMemberRepository;
+        this.messageRepository = messageRepository;
     }
 
     @Transactional
@@ -96,7 +99,9 @@ public class RoomService {
             LocalDateTime date = room.getDate();
             Long hours = calculationHour(date);
             if(hours > 168){
+                log.info("delete Message : roomId = {}", room.getId());
                 log.info("delete Room '0' : roomId = {}", room.getId());
+                messageRepository.deleteByRoom(room);
                 roomInMemberRepository.deleteByRoom(room);
                 roomRepository.deleteById(room.getId());
             }
@@ -106,11 +111,12 @@ public class RoomService {
             LocalDateTime date = room.getDate();
             Long hours = calculationHour(date);
             if(hours > 24){
+                log.info("delete Message : roomId = {}", room.getId());
                 log.info("delete Room '1' : roomId = {}", room.getId());
+                messageRepository.deleteByRoom(room);
                 roomInMemberRepository.deleteByRoom(room);
                 roomRepository.deleteById(room.getId());
             }
         }
-
     }
 }

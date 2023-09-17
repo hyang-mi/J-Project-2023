@@ -1,8 +1,10 @@
-package com.mjuAppSW.joA.domain.report;
+package com.mjuAppSW.joA.domain.report.message;
 
 
 import com.mjuAppSW.joA.domain.message.Message;
 import com.mjuAppSW.joA.domain.message.MessageRepository;
+import com.mjuAppSW.joA.domain.report.ReportCategory;
+import com.mjuAppSW.joA.domain.report.ReportCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

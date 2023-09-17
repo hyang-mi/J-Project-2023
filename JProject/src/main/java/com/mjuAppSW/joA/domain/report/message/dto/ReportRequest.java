@@ -1,4 +1,4 @@
-package com.mjuAppSW.joA.domain.report.dto;
+package com.mjuAppSW.joA.domain.report.message.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;

@@ -64,9 +64,9 @@ public class MessageService {
             for(Message message : messageList){
                 String getMessage = "";
                 if(message.getMember() == member){
-                    getMessage = "R " + message.getContent();
+                    getMessage = "R" + " " + message.getIsChecked() + " " + message.getContent();
                 }else {
-                    getMessage = "L " + message.getContent();
+                    getMessage = "L" + " " + message.getIsChecked() + " " + message.getContent();
                 }
                 MessageResponse messageResponse = new MessageResponse(getMessage);
                 messageResponseList.add(messageResponse);

@@ -1,6 +1,6 @@
-package com.mjuAppSW.joA.domain.report;
+package com.mjuAppSW.joA.domain.report.message;
 
-import com.mjuAppSW.joA.domain.report.dto.ReportRequest;
+import com.mjuAppSW.joA.domain.report.message.dto.ReportRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -23,14 +23,14 @@ public class RoomInMemberApiController {
     @GetMapping("/load/roomList")
     public ResponseEntity<List<RoomDTO>> getRoomList(
             @RequestParam("memberId") Long memberId) {
-        log.info("loadRoomList : memberId = {}", memberId);
+        log.info("getRoomList : memberId = {}", memberId);
         RoomList response = roomInMemberService.getRoomList(memberId);
         if(response.getStatus().equals("0") || response.getStatus().equals("1")){
-            log.info("loadRoomList Return : OK"); // real value or just ok?
+            log.info("getRoomList Return : OK"); // real value or just ok?
             return ResponseEntity.ok(response.getRoomDTOList());
         }else{
-            log.warn("loadRoomList Return : BAD_REQUEST, roomId's not correct");
-            log.warn("loadRoomList : memberId = {}", memberId);
+            log.warn("getRoomList Return : BAD_REQUEST, roomId's not correct");
+            log.warn("getRoomList : memberId = {}", memberId);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -102,5 +102,18 @@ public class RoomInMemberApiController {
             log.warn("checkRoomInMember : memberId1 = {}, memberId2 = {}", request.getMemberId1(), request.getMemberId2());
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+    }
+    @GetMapping("/load/userInfo")
+    public ResponseEntity<UserInfoDTO> getUserInfo(@RequestParam("roomId") Long roomId,
+                                                   @RequestParam("memberId") Long memberId){
+        log.info("getUserInfo : roomId = {}, memberId = {}", roomId, memberId);
+        UserInfoDTO userResponse = roomInMemberService.getUserInfo(roomId, memberId);
+        if(userResponse.getName() == null){
+            return ResponseEntity.badRequest().body(userResponse);
+        }
+        log.info("userInfoDTO : name = {}, urlCode = {}, bio = {}", userResponse.getName(),
+                userResponse.getUrlCode(), userResponse.getBio());
+        log.info("getUserInfo Return : ok");
+        return ResponseEntity.ok(userResponse);
     }
 }

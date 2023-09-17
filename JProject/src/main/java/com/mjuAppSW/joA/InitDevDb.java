@@ -1,20 +1,15 @@
 package com.mjuAppSW.joA;
 
-import com.mjuAppSW.joA.domain.college.College;
+import com.mjuAppSW.joA.domain.college.MCollege;
 import com.mjuAppSW.joA.domain.heart.Heart;
 import com.mjuAppSW.joA.domain.member.Member;
 import com.mjuAppSW.joA.domain.report.ReportCategory;
 import com.mjuAppSW.joA.domain.vote.Vote;
 import com.mjuAppSW.joA.domain.voteCategory.VoteCategory;
-import com.mjuAppSW.joA.geography.Location;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +39,7 @@ public class InitDevDb {
 
         private final EntityManager em;
 
-        College c1, c2, c3;
+        MCollege c1, c2, c3;
         VoteCategory vc1, vc2, vc3, vc4, vc5, vc6, vc7, vc8;
         ReportCategory rc1, rc2, rc3;
         Member member1, member2, member3, member4, member5;
@@ -52,9 +47,9 @@ public class InitDevDb {
         Vote v1, v2, v3, v4, v5, v6, v7, v8, v9, v10;
 
         public void initCollege() {
-            c1 = new College(1L, "명지대학교", "@mju.ac.kr");
-            c2 = new College(2L, "애플대학교", "@icloud.com");
-            c3 = new College(3L, "네이버대학교", "@naver.com");
+            c1 = new MCollege(1L, "명지대학교", "@mju.ac.kr");
+            c2 = new MCollege(2L, "애플대학교", "@icloud.com");
+            c3 = new MCollege(3L, "네이버대학교", "@naver.com");
             em.persist(c1);
             em.persist(c2);
             em.persist(c3);

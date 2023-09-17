@@ -1,6 +1,7 @@
-package com.mjuAppSW.joA.domain.report;
+package com.mjuAppSW.joA.domain.report.message;
 
 import com.mjuAppSW.joA.domain.message.Message;
+import com.mjuAppSW.joA.domain.report.ReportCategory;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,6 @@ public class MessageReport {
 
     @OneToOne
     @JoinColumn(name = "Message_Id", nullable = false)
-//    @PrimaryKeyJoinColumn
     private Message message_id;
 
     @ManyToOne

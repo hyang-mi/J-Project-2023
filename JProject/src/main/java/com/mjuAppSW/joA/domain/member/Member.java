@@ -1,6 +1,6 @@
 package com.mjuAppSW.joA.domain.member;
 
-import com.mjuAppSW.joA.domain.college.College;
+import com.mjuAppSW.joA.domain.college.MCollege;
 import com.mjuAppSW.joA.domain.roomInMember.RoomInMember;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -44,13 +44,13 @@ public class Member {
 
     @ManyToOne
     @JoinColumn(name = "College_id")
-    private College college;
+    private MCollege college;
 
     @OneToMany(mappedBy = "member")
     private List<RoomInMember> roomInMember = new ArrayList<>();
 
     @Builder
-    public Member(Long id, String name, String loginId, String password, String uEmail, College college) {
+    public Member(Long id, String name, String loginId, String password, String uEmail, MCollege college) {
         this.id = id;
         this.name = name;
         this.loginId = loginId;
