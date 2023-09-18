@@ -69,7 +69,8 @@ public class LocationService {
             if(findEqualHeart != null)
                 isLiked = true;
 
-            nearByInfoList.add(NearByInfo.builder().name(findMember.getName())
+            nearByInfoList.add(NearByInfo.builder().id(findMember.getId())
+                                                .name(findMember.getName())
                                                 .urlCode(urlCode)
                                                 .bio(findMember.getBio())
                                                 .isLiked(isLiked).build());

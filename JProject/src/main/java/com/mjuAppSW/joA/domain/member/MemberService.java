@@ -321,19 +321,19 @@ public class MemberService {
 
     private Member findByMemberId(Long id) {
         Member member = memberRepository.findById(id).orElse(null);
-        if (member.getWithdrawal() == true) return null;
+        if (member == null || member.getWithdrawal() == true) return null;
         return member;
     }
 
     private Member findByUEmailAndCollege(String uEmail, MCollege college) {
         Member member = memberRepository.findByuEmailAndcollege(uEmail, college).orElse(null);
-        if (member.getWithdrawal() == true) return null;
+        if (member == null || member.getWithdrawal() == true) return null;
         return member;
     }
 
     private Member findByLoginId(String loginId) {
         Member member = memberRepository.findByloginId(loginId).orElse(null);
-        if (member.getWithdrawal() == true) return null;
+        if (member == null || member.getWithdrawal() == true) return null;
         return member;
     }
 

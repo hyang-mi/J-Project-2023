@@ -71,7 +71,7 @@ public class HeartService {
 
     private Member findByMemberId(Long id) {
         Member member = memberRepository.findById(id).orElse(null);
-        if(member.getWithdrawal() == true) return null;
+        if(member == null && member.getWithdrawal() == true) return null;
         return member;
     }
 

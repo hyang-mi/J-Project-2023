@@ -1,6 +1,5 @@
 package com.mjuAppSW.joA.geography.location.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 

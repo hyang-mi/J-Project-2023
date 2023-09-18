@@ -6,6 +6,7 @@ import lombok.Getter;
 @Builder
 @Getter
 public class NearByInfo {
+    private Long id;
     private String name;
     private String urlCode;
     private String bio;
